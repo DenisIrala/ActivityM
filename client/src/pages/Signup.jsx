@@ -1,10 +1,10 @@
 import React from 'react';
 import '../css/Auth.css';
 
-const Login = () => {
+const Signup = () => {
   return (
   <div className="auth-container">
-    <h1>Login</h1>
+    <h1>Sign Up</h1>
     <form>
       <div className="form-group">
         <label htmlFor="username">Username</label>
@@ -14,13 +14,17 @@ const Login = () => {
         <label htmlFor="password">Password</label>
         <input type="text" id="password" name="password"/>
       </div>
-      <button type="submit" id="" className="submit-button">login</button>
-      <div className="signup-link">
-        <p>Not a member yet? <a href="/signup" className="redirect-link">Sign Up</a></p>
+      <div className="form-group">
+        <label htmlFor="confirm-password">Confirm Password</label>
+        <input type="text" id="confirm-password" name="confirm-password"/>
+      </div>
+      <button type="submit" id="" className="submit-button">create account</button>
+      <div className="login-link">
+        <p>Already a member? <a href="/" className="redirect-link">Login</a></p>
       </div>
     </form>
   </div>
   );
 };
 
-export default Login;
+export default Signup;
