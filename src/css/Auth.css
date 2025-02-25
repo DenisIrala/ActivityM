@@ -1,0 +1,44 @@
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 90vh;
+  padding: 30px;
+}
+
+.form-group {
+  font-size: 20px;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+input {
+  font-size: 1.25rem;
+  border: none;
+  border-bottom: 2px solid #404040;
+  width: 95%;
+  padding: 10px 5px 10px 10px;
+}
+
+.login-link, .signup-link {
+  font-size: 1.25rem;
+  text-align: center;
+}
+
+.redirect-link {
+  text-decoration: none;
+  color: #2A9794;
+  font-weight: 500;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 10px 20px;
+  background-color: #E1F3F5;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0px 3px 5px 0px #8888;
+  margin-top: 20px;
+  cursor: pointer;
+}
