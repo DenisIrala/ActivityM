@@ -3,15 +3,17 @@ const cors = require('cors');
 const path = require('path');
 const app = express();
 const port = 3000;
-const DBP = process.env.DB_PASSWORD;
-
 const mysql = require('mysql2/promise');
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+const DBP = process.env.DB_PASSWORD;
 
 const config = {
   host: 'localhost',
   user: 'typh',
-  password: process.env.DB_PASSWORD,
+  password: DBP,
   database: 'ActivityM'
 };
 

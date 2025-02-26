@@ -11,6 +11,7 @@
     "start": "npm run build && node backend/server.js"
   },
   "dependencies": {
+    "dotenv": "^16.4.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.2.0"
