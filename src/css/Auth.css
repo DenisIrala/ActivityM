@@ -21,24 +21,31 @@ input {
   padding: 10px 5px 10px 10px;
 }
 
-.login-link, .signup-link {
+.login-link,
+.signup-link {
   font-size: 1.25rem;
   text-align: center;
 }
 
 .redirect-link {
   text-decoration: none;
-  color: #2A9794;
+  color: #2a9794;
   font-weight: 500;
 }
 
 .submit-button {
   width: 100%;
   padding: 10px 20px;
-  background-color: #E1F3F5;
+  background-color: #e1f3f5;
   border: none;
   border-radius: 10px;
   box-shadow: 0px 3px 5px 0px #8888;
   margin-top: 20px;
   cursor: pointer;
+}
+
+.error-message {
+  margin-top: 10px;
+  color: red;
+  font-size: 1.15rem;
 }
