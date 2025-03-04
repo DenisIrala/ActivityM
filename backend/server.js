@@ -16,9 +16,9 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 
 const config = {
   host: 'localhost',
-  user: 'typh',
-  password: DBP,
-  database: 'ActivityM'
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
 };
 
 const client = new OAuth2Client(GOOGLE_CLIENT_ID); // Google OAuth client
