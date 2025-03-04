@@ -48,6 +48,7 @@ const Login = () => {
       });
 
       console.log("Login successful:", response.data);
+      localStorage.setItem('token', response.data.token);
       navigate("/home"); // Redirect after successful login
     } catch (error: any) {
       if (error.response) {

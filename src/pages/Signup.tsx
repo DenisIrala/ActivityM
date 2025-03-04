@@ -65,7 +65,7 @@ const Signup = () => {
         username: formData.username,
         pass: formData.password,
       });
-
+      localStorage.setItem('token', response.data.token);
       console.log("Signup successful:", response.data);
       navigate("/home"); // Redirect after successful signup
     } catch (error: any) {

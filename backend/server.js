@@ -6,6 +6,9 @@ const port = 3000;
 const mysql = require('mysql2/promise');
 const bcrypt = require('bcryptjs');
 const { OAuth2Client } = require('google-auth-library');
+const jwt =require('jsonwebtoken');
+const secret = process.env.JWT_SECRET;
+const expiresIn = process.env.JWT_EXPIRES_IN || '1h';
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
@@ -124,9 +127,17 @@ app.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
+    const token = jwt.sign(
+      { accID: user.accID, username: user.username },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
     res.json({
       message: 'Login successful',
-      accID: user.accID
+      token,
+      accID: user.accID,
+      username: user.username
     });
 
 
@@ -138,6 +149,28 @@ app.post('/login', async (req, res) => {
     if (connection) await connection.end();
   }
 });
+
+//Authentication verification
+
+app.get('/me', async (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  
+  if (!token) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    res.json({
+      accID: decoded.accID,
+      username: decoded.username
+    });
+  } catch (error) {
+    res.status(401).json({ error: 'Invalid token' });
+  }
+});
+
+
 
 // OAuth 2.0 Google Login Endpoint
 app.post('/google-login', async (req, res) => {
