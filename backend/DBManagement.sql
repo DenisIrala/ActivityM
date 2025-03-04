@@ -27,3 +27,25 @@ CREATE TABLE IF NOT EXISTS Items (
 
 -- Log In / Register [Lindsey]
 
+DELIMITER $$
+
+CREATE PROCEDURE LoginUser(
+    IN p_username VARCHAR(30)
+)
+BEGIN
+    SELECT pass FROM Accounts WHERE username = p_username;
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE PROCEDURE RegisterUser(
+    IN p_username VARCHAR(30),
+    IN p_pass VARCHAR(60)
+)
+BEGIN
+    INSERT INTO Accounts (username, pass) VALUES (p_username, p_pass);
+END $$
+
+DELIMITER ;
