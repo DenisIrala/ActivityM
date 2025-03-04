@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import UsernameInput from "../components/UsernameInput";
 import PasswordInput from "../components/PasswordInput";
 import EmailInput from "../components/EmailInput";
@@ -23,6 +25,8 @@ const Signup = () => {
   });
 
   const [errors, setErrors] = useState<Partial<SignupFormData>>({});
+  const [signupError, setSignupError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const validateField = (name: string, value: string) => {
     let error = "";
@@ -45,11 +49,32 @@ const Signup = () => {
     validateField(name, value);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (Object.values(errors).some((err) => err)) return;
-    console.log("Signup successful:", formData);
-    alert("Signup successful! (Simulated API Response)");
+
+    if (formData.password !== formData.confirmPassword) {
+      setErrors((prev) => ({
+        ...prev,
+        confirmPassword: "Passwords do not match",
+      }));
+      return;
+    }
+
+    try {
+      const response = await axios.post("http://localhost:3000/register", {
+        username: formData.username,
+        pass: formData.password,
+      });
+
+      console.log("Signup successful:", response.data);
+      navigate("/home"); // Redirect after successful signup
+    } catch (error: any) {
+      if (error.response) {
+        setSignupError(error.response.data.error);
+      } else {
+        setSignupError("An unexpected error occurred.");
+      }
+    }
   };
 
   return (
@@ -76,6 +101,8 @@ const Signup = () => {
           onChange={handleChange}
           error={errors.confirmPassword}
         />
+        {signupError && <p className="error-message">{signupError}</p>}
+
         <SubmitButton
           text="Create Account"
           disabled={Object.values(errors).some((err) => err)}

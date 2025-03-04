@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import UsernameInput from "../components/UsernameInput";
 import PasswordInput from "../components/PasswordInput";
 import SubmitButton from "../components/SubmitButton";
@@ -19,9 +17,6 @@ const Login = () => {
   });
 
   const [errors, setErrors] = useState<Partial<LoginFormData>>({});
-  const [loginError, setLoginError] = useState<string | null>(null);
-
-  const navigate = useNavigate();
 
   const validateField = (name: string, value: string) => {
     let error = "";
@@ -38,24 +33,11 @@ const Login = () => {
     validateField(name, value);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    try {
-      const response = await axios.post("http://localhost:3000/login", {
-        username: formData.username,
-        pass: formData.password,
-      });
-
-      console.log("Login successful:", response.data);
-      navigate("/home"); // Redirect after successful login
-    } catch (error: any) {
-      if (error.response) {
-        setLoginError(error.response.data.error);
-      } else {
-        setLoginError("An unexpected error occurred.");
-      }
-    }
+    if (Object.values(errors).some((err) => err)) return;
+    console.log("Login successful:", formData);
+    alert("Login successful! (Simulated API Response)");
   };
 
   return (
@@ -72,7 +54,6 @@ const Login = () => {
           onChange={handleChange}
           error={errors.password}
         />
-        {loginError && <p className="error-message">{loginError}</p>}{" "}
         <SubmitButton
           text="Login"
           disabled={Object.values(errors).some((err) => err)}

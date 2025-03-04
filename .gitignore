@@ -23,3 +23,4 @@ etc
 *.njsproj
 *.sln
 *.sw?
+.env
