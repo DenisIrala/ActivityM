@@ -42,13 +42,16 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://3.148.105.46:3000/login", {
+      const API_BASE = import.meta.env.VITE_API_BASE_URL;
+      console.log("API_BASE URL:", API_BASE);
+
+      const response = await axios.post(`${API_BASE}/login`, {
         username: formData.username,
         pass: formData.password,
       });
 
       console.log("Login successful:", response.data);
-      localStorage.setItem('token', response.data.token);
+      localStorage.setItem("token", response.data.token);
       navigate("/home"); // Redirect after successful login
     } catch (error: any) {
       if (error.response) {
