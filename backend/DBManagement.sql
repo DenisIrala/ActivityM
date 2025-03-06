@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS Items (
 	listID INT NOT NULL,
 	time DATE,
 	description VARCHAR(100),
+	mark BOOLEAN,
 	PRIMARY KEY (itemID),
 	FOREIGN KEY (listID) REFERENCES Lists(listID)
 );
