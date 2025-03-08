@@ -1,0 +1,183 @@
+/* Fonts Form Google Font ::- https://fonts.google.com/  -:: */
+@import url('https://fonts.googleapis.com/css?family=Abel|Abril+Fatface|Alegreya|Arima+Madurai|Dancing+Script|Dosis|Merriweather|Oleo+Script|Overlock|PT+Serif|Pacifico|Playball|Playfair+Display|Share|Unica+One|Vibur');
+/* End Fonts */
+/* Start Global rules */
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+/* End Global rules */
+
+/* Start body rules */
+body {
+    background-image: linear-gradient(-225deg, #E3FDF5 0%, #FFE6FA 100%);
+background-image: linear-gradient(to top, #a8edea 0%, #fed6e3 100%);
+background-attachment: fixed;
+  background-repeat: no-repeat;
+
+    font-family: 'Vibur', cursive;
+/*   the main font */
+    font-family: 'Abel', sans-serif;
+opacity: .95;
+/* background-image: linear-gradient(to top, #d9afd9 0%, #97d9e1 100%); */
+}
+
+
+/* //////////////////////////////////////////// */
+
+
+
+
+/* End body rules */
+
+/* Start form  attributes */
+form {
+    width: 450px;
+    min-height: 500px;
+    height: auto;
+    border-radius: 5px;
+    margin: 2% auto;
+    box-shadow: 0 9px 50px hsla(20, 67%, 75%, 0.31);
+    padding: 2%;
+    background-image: linear-gradient(-225deg, #E3FDF5 50%, #FFE6FA 50%);
+} 
+
+/* samp form */
+
+.form-group {
+    display: flex; /* Use flexbox for alignment */
+    flex-direction: column; /* Stack label and input vertically */
+    align-items: center; /* Center align items */
+    margin: 20px 0; /* Add some space between groups */
+}
+label {
+    margin-bottom: 5px; /* Space between label and input */
+}
+input {
+    width: 70%; /* Adjust input width */
+    padding: 10px; /* Add padding for input */
+    border: 1px solid #ccc; /* Border style for inputs */
+    border-radius: 5px; /* Rounded corners for inputs */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+input:focus {
+    border-color: #007bff; 
+    outline: none; /* Remove default outline */
+}
+
+
+/* form Container */
+form .auth-container {
+    display: -webkit-flex;
+    display: flex;
+  
+    -webkit-justify-content: space-around;
+    justify-content: space-around;
+  
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+  
+      margin: 0 auto;
+}
+
+/* the header fromm form */
+header {
+    margin: 2% auto 10% auto;
+    text-align: center;
+}
+/* Login title from form */
+header h1 {
+    font-size: 250%;
+    font-family: 'Playfair Display', serif;
+    color: #3e403f;
+}
+
+/*  A welcome message or an explanation of the login form */
+header p {letter-spacing: 0.05em;}
+
+.form-group {
+  
+  text-align: center;
+  
+}
+
+
+/* buttons  
+button {
+    display: inline-block;
+    color: #252537;
+  
+    box-align: center;
+  
+    width: 280px;
+    height: 50px;
+  
+    padding: 0 20px;
+    background: #fff;
+    border-radius: 5px;
+    
+    outline: none;
+    border: none;
+  
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s linear;
+    
+    margin: 7% auto;
+    letter-spacing: 0.05em;
+} */
+.container
+{
+  text-align: center;
+}
+.log-in {
+    display: block; /* Make the button a block element */
+    color: #252537;
+    width: 280px; /* Keep button width */
+    height: 50px;
+    padding: 0 20px;
+    background: #fff;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s linear;
+    margin: 20px auto; /* Centers the button with margin */
+}
+
+.signup-link {
+    margin-top: 10px; /* Space above the signup link */
+}
+
+.redirect-link {
+    color: #007bff; /* Customize link color */
+    text-decoration: none; /* Remove underline from link */
+}
+
+.redirect-link:hover {
+    text-decoration: underline; /* Add underline on hover */
+}
+
+
+
+/*
+#eye {
+    background: #fff;
+    color: #333;
+  
+    margin: 5.9px 0 0 0;
+    margin-left: -20px;
+    padding: 15px 9px 19px 0px;
+    border-radius: 0px 5px 5px 0px;
+  
+    float: right;
+    position: relative;
+    right: 1%;
+    top: -.2%;
+    z-index: 5;
+    
+    cursor: pointer;
+} */
