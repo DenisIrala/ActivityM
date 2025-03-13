@@ -13,9 +13,16 @@ CREATE TABLE IF NOT EXISTS Lists (
 	listID INT NOT NULL AUTO_INCREMENT,
 	ownerID INT NOT NULL,
 	ListName VARCHAR (60),
-	SharedIDs[],
 	PRIMARY KEY (listID),
 	FOREIGN KEY (ownerID) REFERENCES Accounts(accID)
+);
+
+CREATE TABLE IF NOT EXISTS ListShares (
+    listID INT NOT NULL,
+    sharedWithID INT NOT NULL,
+    PRIMARY KEY (listID, sharedWithID),
+    FOREIGN KEY (listID) REFERENCES Lists(listID),
+    FOREIGN KEY (sharedWithID) REFERENCES Accounts(accID)
 );
 
 CREATE TABLE IF NOT EXISTS Items (
@@ -30,28 +37,37 @@ CREATE TABLE IF NOT EXISTS Items (
 
 -- List Management Functions (SQL Base) [Lindsey]
 -- Ollie will be formatting these into the API.
-CREATE PROCEDURE IF NOT EXISTS getLists (IN accountID INT) 
+
+DELIMITER $$
+CREATE PROCEDURE getLists (IN accountID INT) 
 BEGIN 
     SELECT listID, listName 
-    FROM     Lists 
+    FROM Lists 
     WHERE ownerID = accountID; 
-END;
+END $$
+DELIMITER ;
 
-CREATE PROCEDURE IF NOT EXISTS addList (IN accountID INT, IN listName VARCHAR(60)) 
+DELIMITER $$
+CREATE PROCEDURE addList (IN accountID INT, IN listName VARCHAR(60)) 
 BEGIN 
 	INSERT INTO Lists (ownerID, ListName)
 	VALUES (accountID, listName); 
-END; 
+END $$ 
+DELIMITER ;
 
+DELIMITER $$
 CREATE PROCEDURE updateList(IN listID INT, IN accountID INT, IN newName VARCHAR(60))
 BEGIN
 	UPDATE Lists
 	SET ListName = newName
 	WHERE listID = listID AND ownerID = accountID;
-END; 
+END $$
+DELIMITER ;
 
+DELIMITER $$
 CREATE PROCEDURE deleteList(IN listID INT, IN accountID INT) 
 BEGIN 
     DELETE FROM Lists
     WHERE listID = listID AND ownerID = accountID; 
-END;
+END$$
+DELIMITER ;

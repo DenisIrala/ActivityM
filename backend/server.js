@@ -28,21 +28,7 @@ const config = {
 };
 
 const client = new OAuth2Client(GOOGLE_CLIENT_ID); // Google OAuth client
-let pool;
-
-async function main() { //Testing database
-  try {
-    // Create a connection
-    pool = await mysql.createPool(config);
-    
-    console.log('Successfully connected to the database');
-
-  } catch (error) {
-    console.error('Database error:', error);
-  }
-}
-
-main();
+let pool=mysql.createPool(config);;
 
 //Middleware
 // Middleware
@@ -190,11 +176,18 @@ app.post("/addList",(req,res)=>{
 });
 
 app.get("/getLists",(req,res)=>{
-  pool.query('getLists(?)', [req.params.ownerID], (err, [rows,fields]) => {
+  const ownerID=req.body.ownerID;
+  if (!ownerID) {
+    return res.status(400).json({ error: 'ownerID is required' }); // Handle missing ownerID
+  }
+  pool.query('CALL getLists(?)', [ownerID], (err, results) => {
     if (err) {
-      console.error('Error executing query', err);
+      console.error('Database query error:', err);
+      return res.status(500).json({ error: 'Database error' });
     } else {
-      res.json(rows);
+      console.error('Got results', err);
+      res.json(results);
+      res.send("Success!");
     };
   })
 })
@@ -203,7 +196,7 @@ app.put("/updateList",(req,res)=>{
   const newName= req.body.newName;
   const accountId= req.body.accountId;
   const listId= req.body.listId;
-  pool.query('updateList(?, ?, ?)',[newName,accountId,listId], (err, result) => {
+  pool.query('CALL updateList(?, ?, ?)',[newName,accountId,listId], (err, result) => {
     if (err) {
       console.error('Error executing query', err);
     } else {
@@ -216,7 +209,7 @@ app.delete("/deleteList/:lidtID",(req,res)=>{
   const {listID}= req.params;
   const ownerID = req.body.ownerID;
 
-  client.query('deleteList(?,?)',[listID,ownerID], (err, result) => {
+  client.query('CALL deleteList(?,?)',[listID,ownerID], (err, result) => {
     if (err) {
       console.error('Error executing query', err);
     } else {
