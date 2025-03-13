@@ -28,7 +28,7 @@ const config = {
 };
 
 const client = new OAuth2Client(GOOGLE_CLIENT_ID); // Google OAuth client
-let pool=mysql.createPool(config);;
+let pool= mysql.createPool(config);
 
 //Middleware
 // Middleware
@@ -156,46 +156,45 @@ app.get('/me', async (req, res) => {
   }
 });
 
-app.post("/addList",(req,res)=>{
+app.post("/addList", async(req,res)=>{
   const name= req.body.name;
-  const description=req.body.description;
-  const author=req.body.author;
-  const noe=req.body.noe;
-  const demography=req.body.demography;
-  const link=req.body.link;
-
-  client.query('INSERT INTO "Manga"(nombre_manga,descripcion,link, autor, nchap, demografia) VALUES($1,$2,$3,$4,$5,$6);',[name,description,link,author,noe,demography], (err, result) => {
-    if (err) {
-      console.error('Error executing query', err);
-    } else {
-      console.log('Query result:', result.rows);
-      res.send("Exito!");
-    }
-  });
+  const ownerID=req.body.ownerID;
+  try{
+    await pool.query('CALL addList(?, ?)', [ownerID, name]); // Incomplete
+    res.send("Success");
+  }catch (err) {
+    console.error('Database query error:', err);
+    res.status(500).json({ error: 'Database error' });
+  }
 
 });
 
-app.get("/getLists",(req,res)=>{
-  const ownerID=req.body.ownerID;
+app.get("/getLists", async (req,res)=>{
+  const ownerID=req.query.ownerID;
   if (!ownerID) {
     return res.status(400).json({ error: 'ownerID is required' }); // Handle missing ownerID
   }
-  pool.query('CALL getLists(?)', [ownerID], (err, results) => {
-    if (err) {
-      console.error('Database query error:', err);
-      return res.status(500).json({ error: 'Database error' });
-    } else {
-      console.error('Got results', err);
-      res.json(results);
-      res.send("Success!");
-    };
-  })
+  try{
+    const [results] = await pool.query('CALL getLists(?)', [ownerID]);
+    res.json(results[0]);
+  }catch (err) {
+    console.error('Database query error:', err);
+    res.status(500).json({ error: 'Database error' });
+  }
 })
 
-app.put("/updateList",(req,res)=>{
+app.put("/updateList", async (req,res)=>{
   const newName= req.body.newName;
   const accountId= req.body.accountId;
   const listId= req.body.listId;
+  try{
+    await pool.query('CALL updateList(?, ?, ?)', [ownerID]);
+    res.send("Success");
+  }catch (err) {
+    console.error('Database query error:', err);
+    res.status(500).json({ error: 'Database error' });
+  }
+
   pool.query('CALL updateList(?, ?, ?)',[newName,accountId,listId], (err, result) => {
     if (err) {
       console.error('Error executing query', err);
@@ -205,17 +204,16 @@ app.put("/updateList",(req,res)=>{
   });
 })
 
-app.delete("/deleteList/:lidtID",(req,res)=>{
-  const {listID}= req.params;
-  const ownerID = req.body.ownerID;
+app.delete("/deleteList/:listID", async (req,res)=>{
+  const {listID, ownerID}= req.params;
 
-  client.query('CALL deleteList(?,?)',[listID,ownerID], (err, result) => {
-    if (err) {
-      console.error('Error executing query', err);
-    } else {
-      res.send("Success!");
-    }
-  });
+  try{
+    await pool.query('CALL deleteList(?,?)',[listID,ownerID]);
+    res.send("Success");
+  }catch (err) {
+    console.error('Database query error:', err);
+    res.status(500).json({ error: 'Database error' });
+  }
 })
 
 // OAuth 2.0 Google Login Endpoint
