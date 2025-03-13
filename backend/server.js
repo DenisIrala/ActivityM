@@ -21,28 +21,28 @@ const config = {
   host: 'localhost',
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
 };
 
 const client = new OAuth2Client(GOOGLE_CLIENT_ID); // Google OAuth client
+let pool;
 
 async function main() { //Testing database
-  let connection;
   try {
     // Create a connection
-    connection = await mysql.createConnection(config);
+    pool = await mysql.createPool(config);
     
     console.log('Successfully connected to the database');
 
   } catch (error) {
     console.error('Database error:', error);
-  } finally {
-    // Close the connection
-    if (connection) await connection.end();
   }
 }
 
-//main();
+main();
 
 //Middleware
 // Middleware
@@ -170,7 +170,60 @@ app.get('/me', async (req, res) => {
   }
 });
 
+app.post("/addList",(req,res)=>{
+  const name= req.body.name;
+  const description=req.body.description;
+  const author=req.body.author;
+  const noe=req.body.noe;
+  const demography=req.body.demography;
+  const link=req.body.link;
 
+  client.query('INSERT INTO "Manga"(nombre_manga,descripcion,link, autor, nchap, demografia) VALUES($1,$2,$3,$4,$5,$6);',[name,description,link,author,noe,demography], (err, result) => {
+    if (err) {
+      console.error('Error executing query', err);
+    } else {
+      console.log('Query result:', result.rows);
+      res.send("Exito!");
+    }
+  });
+
+});
+
+app.get("/getLists",(req,res)=>{
+  pool.query('getLists(?)', [req.params.ownerID], (err, [rows,fields]) => {
+    if (err) {
+      console.error('Error executing query', err);
+    } else {
+      res.json(rows);
+    };
+  })
+})
+
+app.put("/updateList",(req,res)=>{
+  const newName= req.body.newName;
+  const accountId= req.body.accountId;
+  const listId= req.body.listId;
+  pool.query('updateList(?, ?, ?)',[newName,accountId,listId], (err, result) => {
+    if (err) {
+      console.error('Error executing query', err);
+    } else {
+      res.send("Success!");
+    }
+  });
+})
+
+app.delete("/deleteList/:lidtID",(req,res)=>{
+  const {listID}= req.params;
+  const ownerID = req.body.ownerID;
+
+  client.query('deleteList(?,?)',[listID,ownerID], (err, result) => {
+    if (err) {
+      console.error('Error executing query', err);
+    } else {
+      res.send("Success!");
+    }
+  });
+})
 
 // OAuth 2.0 Google Login Endpoint
 app.post('/google-login', async (req, res) => {
