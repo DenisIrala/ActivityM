@@ -71,3 +71,49 @@ BEGIN
     WHERE listID = listID AND ownerID = accountID; 
 END$$
 DELIMITER ;
+
+-- Task Functions [Lindsey]
+-- Ollie will format into API
+
+DELIMITER $$
+CREATE PROCEDURE getTasks(IN listID INT)
+BEGIN
+    SELECT itemID, description, time, mark
+    FROM Items
+    WHERE listID = listID;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE addTask(IN listID INT, IN taskDescription VARCHAR(100), IN taskTime DATE)
+BEGIN
+    INSERT INTO Items (listID, description, time, mark)
+    VALUES (listID, taskDescription, taskTime, FALSE);
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE markTask(IN itemID INT, IN taskMark BOOLEAN)
+BEGIN
+    UPDATE Items
+    SET mark = taskMark
+    WHERE itemID = itemID;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE updateTask(IN itemID INT, IN newDescription VARCHAR(100), IN newTime DATE)
+BEGIN
+    UPDATE Items
+    SET description = newDescription, time = newTime
+    WHERE itemID = itemID;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE deleteTask(IN itemID INT)
+BEGIN
+    DELETE FROM Items
+    WHERE itemID = itemID;
+END $$
+DELIMITER ;
