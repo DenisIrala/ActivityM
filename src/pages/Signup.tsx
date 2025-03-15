@@ -61,7 +61,10 @@ const Signup = () => {
     }
 
     try {
-      const response = await axios.post(`/register`, {
+      const API_BASE = import.meta.env.VITE_API_BASE_URL || "";
+      console.log("API_BASE URL:", API_BASE);
+
+      const response = await axios.post(`${API_BASE}/register`, {
         username: formData.username,
         pass: formData.password,
       });

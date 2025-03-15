@@ -42,10 +42,10 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const API_BASE = import.meta.env.VITE_API_BASE_URL;
+      const API_BASE = import.meta.env.VITE_API_BASE_URL || "";
       console.log("API_BASE URL:", API_BASE);
 
-      const response = await axios.post(`/login`, {
+      const response = await axios.post(`${API_BASE}/login`, {
         username: formData.username,
         pass: formData.password,
       });
