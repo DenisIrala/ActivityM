@@ -1,34 +1,66 @@
 import { FC, useEffect, useState } from "react";
 import { clearAuth, isValidToken } from "../authUtils";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 // Mock API data
-const mockLists = [
-  { listID: 1, ListName: "Groceries", SharedIDs: [2, 3] },
-  { listID: 2, ListName: "Work Tasks", SharedIDs: [1] },
-];
+// const mockLists = [
+//   { listID: 1, ListName: "Groceries", SharedIDs: [2, 3] },
+//   { listID: 2, ListName: "Work Tasks", SharedIDs: [1] },
+// ];
 
 const Home: FC = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<{ username: string } | null>(null);
-  const [lists, setLists] =
-    useState<{ listID: number; ListName: string; SharedIDs: number[] }[]>(
-      mockLists
-    );
+  // const [lists, setLists] =
+  //   useState<{ listID: number; ListName: string; SharedIDs: number[] }[]>(
+  //     mockLists
+  //   );
+  const [lists, setLists] = useState<{ listID: number; listName: string }[]>(
+    []
+  ); // Initialize as empty array
   const [newListName, setNewListName] = useState("");
   const [editingListId, setEditingListId] = useState<number | null>(null);
   const [editedListName, setEditedListName] = useState("");
 
   const token = localStorage.getItem("token");
 
+  // console.log("API Base URL:", import.meta.env.VITE_API_BASE_URL);
+
+  const fetchLists = async () => {
+    try {
+      const ownerID = localStorage.getItem("ownerID");
+      if (!ownerID) {
+        console.error("Error: ownerID is missing.");
+        return;
+      }
+
+      const apiUrl = `${
+        import.meta.env.VITE_API_BASE_URL || "http://localhost:3000"
+      }/getLists?ownerID=${ownerID}`;
+      // console.log("Making API request to:", apiUrl);
+
+      const response = await axios.get(apiUrl, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // console.log("Fetched lists:", response.data);
+      if (!Array.isArray(response.data)) {
+        console.error("Error: API did not return an array!", response.data);
+        return;
+      }
+
+      setLists(response.data);
+    } catch (error) {
+      console.error("Error fetching lists:", error);
+    }
+  };
+
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        // Simulating fetching user data
         setUser({ username: "TestUser" });
-
-        // Simulating fetching lists (Replace with real API call later)
-        setLists(mockLists);
+        await fetchLists();
       } catch (error) {
         handleLogout();
       }
@@ -48,16 +80,16 @@ const Home: FC = () => {
   };
 
   const handleAddList = () => {
-    if (!newListName.trim()) return; // Prevent adding empty lists
+    if (!newListName.trim()) return; 
 
     const newList = {
-      listID: lists.length + 1, // Temporary ID (backend will handle real IDs)
-      ListName: newListName,
-      SharedIDs: [], // Assume no shared users initially
+      listID: lists.length + 1,
+      listName: newListName,
+      SharedIDs: [],
     };
 
-    setLists([...lists, newList]); // Update state
-    setNewListName(""); // Clear input
+    setLists([...lists, newList]);
+    setNewListName("");
   };
 
   const handleRemoveList = (id: number) => {
@@ -75,7 +107,7 @@ const Home: FC = () => {
         list.listID === id ? { ...list, ListName: editedListName } : list
       )
     );
-    setEditingListId(null); // Exit edit mode
+    setEditingListId(null);
   };
 
   if (!user) return <div>Loading...</div>;
@@ -102,9 +134,9 @@ const Home: FC = () => {
               </>
             ) : (
               <>
-                {list.ListName}
+                {list.listName}
                 <button
-                  onClick={() => handleEditList(list.listID, list.ListName)}
+                  onClick={() => handleEditList(list.listID, list.listName)}
                 >
                   Edit
                 </button>

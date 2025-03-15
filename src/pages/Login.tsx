@@ -52,6 +52,7 @@ const Login = () => {
 
       console.log("Login successful:", response.data);
       localStorage.setItem("token", response.data.token);
+      localStorage.setItem("ownerID", response.data.accID.toString());
       navigate("/home"); // Redirect after successful login
     } catch (error: any) {
       if (error.response) {

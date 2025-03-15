@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS Accounts (
 CREATE TABLE IF NOT EXISTS Lists (
 	listID INT NOT NULL AUTO_INCREMENT,
 	ownerID INT NOT NULL,
-	ListName VARCHAR (60),
+	listName VARCHAR (60) NOT NULL, -- D: Corrected to lowercase "listName"
 	PRIMARY KEY (listID),
 	FOREIGN KEY (ownerID) REFERENCES Accounts(accID)
 );
@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS Items (
 -- List Management Functions (SQL Base) [Lindsey]
 -- Ollie will be formatting these into the API.
 
+DROP PROCEDURE IF EXISTS getLists;
 DELIMITER $$
 CREATE PROCEDURE getLists (IN accountID INT) 
 BEGIN 
@@ -47,23 +48,26 @@ BEGIN
 END $$
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS addList;
 DELIMITER $$
 CREATE PROCEDURE addList (IN accountID INT, IN listName VARCHAR(60)) 
 BEGIN 
-	INSERT INTO Lists (ownerID, ListName)
+	INSERT INTO Lists (ownerID, listName) -- D: Fixed to lowercase `listName`
 	VALUES (accountID, listName); 
 END $$ 
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS updateList;
 DELIMITER $$
 CREATE PROCEDURE updateList(IN listID INT, IN accountID INT, IN newName VARCHAR(60))
 BEGIN
 	UPDATE Lists
-	SET ListName = newName
+	SET listName = newName  -- D: Fixed column name
 	WHERE listID = listID AND ownerID = accountID;
 END $$
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS deleteList;
 DELIMITER $$
 CREATE PROCEDURE deleteList(IN listID INT, IN accountID INT) 
 BEGIN 
@@ -75,6 +79,7 @@ DELIMITER ;
 -- Task Functions [Lindsey]
 -- Ollie will format into API
 
+DROP PROCEDURE IF EXISTS getTasks;
 DELIMITER $$
 CREATE PROCEDURE getTasks(IN listID INT)
 BEGIN
@@ -84,6 +89,7 @@ BEGIN
 END $$
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS addTask;
 DELIMITER $$
 CREATE PROCEDURE addTask(IN listID INT, IN taskDescription VARCHAR(100), IN taskTime DATE)
 BEGIN
@@ -92,6 +98,7 @@ BEGIN
 END $$
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS markTask;
 DELIMITER $$
 CREATE PROCEDURE markTask(IN itemID INT, IN taskMark BOOLEAN)
 BEGIN
@@ -101,6 +108,7 @@ BEGIN
 END $$
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS updateTask;
 DELIMITER $$
 CREATE PROCEDURE updateTask(IN itemID INT, IN newDescription VARCHAR(100), IN newTime DATE)
 BEGIN
@@ -110,6 +118,7 @@ BEGIN
 END $$
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS deleteTask;
 DELIMITER $$
 CREATE PROCEDURE deleteTask(IN itemID INT)
 BEGIN
