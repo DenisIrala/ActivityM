@@ -36,7 +36,7 @@ const Home: FC = () => {
       }
 
       const apiUrl = `${
-        import.meta.env.VITE_API_BASE_URL || "http://localhost:3000"
+        import.meta.env.VITE_API_BASE_URL || ""
       }/getLists?ownerID=${ownerID}`;
       // console.log("Making API request to:", apiUrl);
 
