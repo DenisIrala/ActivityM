@@ -188,14 +188,14 @@ app.put("/updateList", async (req,res)=>{
   const accountId= req.body.accountId;
   const listId= req.body.listId;
   try{
-    await pool.query('CALL updateList(?, ?, ?)', [listId, accountId, newName]); -- O: Fixed param order
+    await pool.query('CALL updateList(?, ?, ?)', [newName, listId, accountId]);
     res.send("Success");
   }catch (err) {
     console.error('Database query error:', err);
     res.status(500).json({ error: 'Database error' });
   }
 
-  pool.query('CALL updateList(?, ?, ?)',[listId, accountId, newName], (err, result) => { -- O: Fixed param order
+  pool.query('CALL updateList(?, ?, ?)',[newName, listId, accountId], (err, result) => {
     if (err) {
       console.error('Error executing query', err);
     } else {
