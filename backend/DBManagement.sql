@@ -69,12 +69,13 @@ DELIMITER ;
 
 DROP PROCEDURE IF EXISTS deleteList;
 DELIMITER $$
-CREATE PROCEDURE deleteList(IN listID INT, IN accountID INT) 
-BEGIN 
+CREATE PROCEDURE deleteList(IN listID INT, IN accountID INT)
+BEGIN
     DELETE FROM Lists
-    WHERE listID = listID AND ownerID = accountID; 
+    WHERE Lists.listID = listID AND Lists.ownerID = accountID;
 END$$
 DELIMITER ;
+
 
 -- Task Functions [Lindsey]
 -- Ollie will format into API
