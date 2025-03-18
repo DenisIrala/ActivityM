@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { clearAuth, isValidToken } from "../authUtils";
 import { useNavigate } from "react-router-dom";
+import { apiRequest } from "../services/apiService";
 import axios from "axios";
 
 const Home: FC = () => {
@@ -69,27 +70,16 @@ const Home: FC = () => {
     if (!newListName.trim()) return;
 
     const ownerID = localStorage.getItem("ownerID");
-
     if (!ownerID) {
       console.error("Error: ownerID is missing.");
       return;
     }
 
     try {
-      const apiUrl = `${import.meta.env.VITE_API_BASE_URL || ""}/addList`;
-      const response = await axios.post(
-        apiUrl,
-        { name: newListName, ownerID },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      if (response.status === 200) {
-        console.log("List added successfully!");
-        setNewListName("");
-        fetchLists();
-      } else {
-        console.error("Failed to add list:", response);
-      }
+      await apiRequest("POST", "addList", { name: newListName, ownerID });
+      console.log("List added successfully!");
+      setNewListName("");
+      fetchLists();
     } catch (error) {
       console.error("Error adding list:", error);
     }
@@ -103,19 +93,9 @@ const Home: FC = () => {
     }
 
     try {
-      const apiUrl = `${
-        import.meta.env.VITE_API_BASE_URL || ""
-      }/deleteList/${id}&${ownerID}`;
-      const response = await axios.delete(apiUrl, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (response.status === 200) {
-        console.log("List deleted successfully!");
-        fetchLists();
-      } else {
-        console.error("Failed to delete list:", response);
-      }
+      await apiRequest("DELETE", `deleteList/${id}/${ownerID}`);
+      console.log("List deleted successfully!");
+      fetchLists();
     } catch (error) {
       console.error("Error deleting list:", error);
     }
@@ -128,36 +108,37 @@ const Home: FC = () => {
 
   const handleSaveEdit = async (id: number) => {
     if (!editedListName.trim()) return;
-
+  
     const ownerID = localStorage.getItem("ownerID");
     if (!ownerID) {
       console.error("Error: ownerID is missing.");
       return;
     }
-
+  
     try {
-      const apiUrl = `${import.meta.env.VITE_API_BASE_URL || ""}/updateList`;
-      const response = await axios.put(
-        apiUrl,
-        { listID: id, accountID: ownerID, newName: editedListName },
-        { headers: { Authorization: `Bearer ${token}` } }
+      await apiRequest("PUT", "updateList", {
+        listID: id,
+        accountID: ownerID,
+        newName: editedListName,
+      });
+  
+      console.log("List updated successfully!");
+      
+      setLists(prevLists =>
+        prevLists.map(list =>
+          list.listID === id ? { ...list, listName: editedListName } : list
+        )
       );
-
-      if (response.status === 200) {
-        console.log("List updated successfully!");
-        setLists(
-          lists.map((list) =>
-            list.listID === id ? { ...list, listName: editedListName } : list
-          )
-        );
-        setEditingListId(null);
-      } else {
-        console.error("Failed to update list:", response);
-      }
+  
+      setEditingListId(null);
+      setEditedListName(""); 
+  
+      setTimeout(fetchLists, 800); 
     } catch (error) {
       console.error("Error updating list:", error);
     }
   };
+  
 
   if (!user) return <div>Loading...</div>;
 

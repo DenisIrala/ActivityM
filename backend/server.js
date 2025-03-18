@@ -204,18 +204,23 @@ app.put("/updateList", async (req,res)=>{
   });
 })
 
-app.delete("/deleteList/:listID&:ownerID", async (req,res)=>{
-  const listID = req.params.listID;
-  const ownerID = req.params.ownerID;
+app.delete("/deleteList/:listID/:ownerID", async (req,res)=>{
+  const { listID, ownerID } = req.params;
 
-  try{
-    await pool.query('CALL deleteList(?,?)',[listID,ownerID]);
+  try {
+    const [result] = await pool.query('CALL deleteList(?, ?)', [listID, ownerID]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "List not found or unauthorized" });
+    }
+
     res.send("Success");
-  }catch (err) {
-    console.error('Database query error:', err);
-    res.status(500).json({ error: 'Database error' });
+  } catch (err) {
+    console.error("Database query error:", err);
+    res.status(500).json({ error: "Database error" });
   }
-})
+});
+
 
 // OAuth 2.0 Google Login Endpoint
 app.post('/google-login', async (req, res) => {

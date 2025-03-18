@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS Accounts (
 CREATE TABLE IF NOT EXISTS Lists (
 	listID INT NOT NULL AUTO_INCREMENT,
 	ownerID INT NOT NULL,
-	listName VARCHAR (60) NOT NULL, -- D: Corrected to lowercase "listName"
+	listName VARCHAR (60) NOT NULL, 
 	PRIMARY KEY (listID),
 	FOREIGN KEY (ownerID) REFERENCES Accounts(accID)
 );
@@ -52,18 +52,18 @@ DROP PROCEDURE IF EXISTS addList;
 DELIMITER $$
 CREATE PROCEDURE addList (IN accountID INT, IN listName VARCHAR(60)) 
 BEGIN 
-	INSERT INTO Lists (ownerID, listName) -- D: Fixed to lowercase `listName`
+	INSERT INTO Lists (ownerID, listName) 
 	VALUES (accountID, listName); 
 END $$ 
 DELIMITER ;
 
 DROP PROCEDURE IF EXISTS updateList;
 DELIMITER $$
-CREATE PROCEDURE updateList(IN listID INT, IN accountID INT, IN newName VARCHAR(60))
+CREATE PROCEDURE updateList(IN listID_param INT, IN accountID_param INT, IN newName VARCHAR(60))
 BEGIN
-	UPDATE Lists
-	SET listName = newName  -- D: Fixed column name
-	WHERE listID = listID AND ownerID = accountID;
+    UPDATE Lists
+    SET listName = newName
+    WHERE listID = listID_param AND ownerID = accountID_param;
 END $$
 DELIMITER ;
 
