@@ -62,12 +62,11 @@ const Home: FC = () => {
   }, [navigate, token]);
 
   useEffect(() => {
-    document.title = 'ActivityM';
-    // You can also include cleanup logic if needed
+    document.title = "ActivityM";
     return () => {
-      document.title = ''; // Reset title on unmount (optional)
+      document.title = "";
     };
-  }, [])
+  }, []);
 
   const handleLogout = () => {
     clearAuth();
@@ -116,37 +115,36 @@ const Home: FC = () => {
 
   const handleSaveEdit = async (id: number) => {
     if (!editedListName.trim()) return;
-  
+
     const ownerID = localStorage.getItem("ownerID");
     if (!ownerID) {
       console.error("Error: ownerID is missing.");
       return;
     }
-  
+
     try {
       await apiRequest("PUT", "updateList", {
         listID: id,
         accountID: ownerID,
         newName: editedListName,
       });
-  
+
       console.log("List updated successfully!");
-      
-      setLists(prevLists =>
-        prevLists.map(list =>
+
+      setLists((prevLists) =>
+        prevLists.map((list) =>
           list.listID === id ? { ...list, listName: editedListName } : list
         )
       );
-  
+
       setEditingListId(null);
-      setEditedListName(""); 
-  
-      setTimeout(fetchLists, 800); 
+      setEditedListName("");
+
+      setTimeout(fetchLists, 800);
     } catch (error) {
       console.error("Error updating list:", error);
     }
   };
-  
 
   if (!user) return <div>Loading...</div>;
 
@@ -172,7 +170,17 @@ const Home: FC = () => {
               </>
             ) : (
               <>
-                {list.listName}
+                {/* Clicking on a list navigates to /list/:id */}
+                <span
+                  style={{
+                    cursor: "pointer",
+                    textDecoration: "underline",
+                    color: "blue",
+                  }}
+                  onClick={() => navigate(`/list/${list.listID}`)}
+                >
+                  {list.listName}
+                </span>
                 <button
                   onClick={() => handleEditList(list.listID, list.listName)}
                 >

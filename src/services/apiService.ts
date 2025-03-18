@@ -23,3 +23,31 @@ export const apiRequest = async (
     throw error;
   }
 };
+
+export const fetchTasks = async (listID: number) => {
+  return apiRequest("GET", `getTasks?listID=${listID}`);
+};
+
+export const addTask = async (
+  listID: number,
+  taskDescription: string,
+  taskTime: string
+) => {
+  return apiRequest("POST", "addTask", { listID, taskDescription, taskTime });
+};
+
+export const updateTask = async (
+  itemID: number,
+  newDescription: string,
+  newTime: string
+) => {
+  return apiRequest("PUT", "updateTask", { itemID, newDescription, newTime });
+};
+
+export const markTask = async (itemID: number, taskMark: boolean) => {
+  return apiRequest("POST", "markTask", { itemID, taskMark });
+};
+
+export const deleteTask = async (itemID: number) => {
+  return apiRequest("DELETE", `deleteTask/${itemID}`);
+};
