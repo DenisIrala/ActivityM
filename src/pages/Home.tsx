@@ -61,6 +61,14 @@ const Home: FC = () => {
     }
   }, [navigate, token]);
 
+  useEffect(() => {
+    document.title = 'ActivityM';
+    // You can also include cleanup logic if needed
+    return () => {
+      document.title = ''; // Reset title on unmount (optional)
+    };
+  }, [])
+
   const handleLogout = () => {
     clearAuth();
     navigate("/", { replace: true });
