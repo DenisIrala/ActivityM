@@ -156,6 +156,9 @@ app.get('/me', async (req, res) => {
   }
 });
 
+
+// LIST PROCEDURES -----------------------------
+
 app.post("/addList", async(req,res)=>{
   const name= req.body.name;
   const ownerID=req.body.ownerID;
@@ -220,6 +223,90 @@ app.delete("/deleteList/:listID/:ownerID", async (req,res)=>{
     res.status(500).json({ error: "Database error" });
   }
 });
+
+
+
+// TASK PROCEDURES -----------------------------
+
+app.get("/getTasks", async (req,res)=>{
+  const listID = req.query.listID;
+  if (!listID) {
+    return res.status(400).json({ error: 'listID is required' });
+  }
+  try{
+    const [results] = await pool.query('CALL getTasks(?)', [listID]);
+    res.json(results[0]);
+  }catch (err) {
+    console.error('Database query error:', err);
+    res.status(500).json({ error: 'Database error' });
+  }
+});
+
+app.post("/addTask", async(req,res)=>{
+  const listID = req.body.listID;
+  const taskDescription = req.body.taskDescription;
+  const taskTime=req.body.taskTime;
+  try{
+    await pool.query('CALL addTask(?, ?, ?)', [listID, taskDescription, taskTime]);
+    res.send("Success");
+  }catch (err) {
+    console.error('Database query error:', err);
+    res.status(500).json({ error: 'Database error' });
+  }
+
+});
+
+app.post("/markTask", async(req,res)=>{
+  const itemID = req.body.itemID;
+  const taskMark = req.body.taskMark;
+  try{
+    await pool.query('CALL markTask(?, ?)', [itemID, taskMark]);
+    res.send("Success");
+  }catch (err) {
+    console.error('Database query error:', err);
+    res.status(500).json({ error: 'Database error' });
+  }
+
+});
+
+app.put("/updateTask", async (req,res)=>{
+  const itemID = req.body.itemID;
+  const newDescription = req.body.newDescription;
+  const newTime = req.body.newTime;
+  try{
+    await pool.query('CALL updateTask(?, ?, ?)', [itemID, newDescription, newTime]);
+    res.send("Success");
+  }catch (err) {
+    console.error('Database query error:', err);
+    res.status(500).json({ error: 'Database error' });
+  }
+
+  pool.query('CALL updateTask(?, ?, ?)', [itemID, newDescription, newTime], (err, result) => {
+    if (err) {
+      console.error('Error executing query', err);
+    } else {
+      res.send("Success!");
+    }
+  });
+})
+
+app.delete("/deleteTask/:itemID", async (req,res)=>{
+  const { itemID } = req.params;
+
+  try {
+    const [result] = await pool.query('CALL deleteTask(?)', [itemID]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "List not found or unauthorized" });
+    }
+
+    res.send("Success");
+  } catch (err) {
+    console.error("Database query error:", err);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
 
 
 // OAuth 2.0 Google Login Endpoint

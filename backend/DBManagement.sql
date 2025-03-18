@@ -82,11 +82,11 @@ DELIMITER ;
 
 DROP PROCEDURE IF EXISTS getTasks;
 DELIMITER $$
-CREATE PROCEDURE getTasks(IN listID INT)
+CREATE PROCEDURE getTasks(IN getList INT)
 BEGIN
     SELECT itemID, description, time, mark
     FROM Items
-    WHERE listID = listID;
+    WHERE listID = getList; -- O: Fixed self-reference
 END $$
 DELIMITER ;
 
@@ -105,7 +105,7 @@ CREATE PROCEDURE markTask(IN itemID INT, IN taskMark BOOLEAN)
 BEGIN
     UPDATE Items
     SET mark = taskMark
-    WHERE itemID = itemID;
+    WHERE Items.itemID = itemID; -- O: Fixed self-reference
 END $$
 DELIMITER ;
 
@@ -115,7 +115,7 @@ CREATE PROCEDURE updateTask(IN itemID INT, IN newDescription VARCHAR(100), IN ne
 BEGIN
     UPDATE Items
     SET description = newDescription, time = newTime
-    WHERE itemID = itemID;
+    WHERE Items.itemID = itemID; -- O: Fixed self-reference
 END $$
 DELIMITER ;
 
@@ -124,6 +124,6 @@ DELIMITER $$
 CREATE PROCEDURE deleteTask(IN itemID INT)
 BEGIN
     DELETE FROM Items
-    WHERE itemID = itemID;
+    WHERE Items.itemID = itemID; -- O: Fixed self-reference
 END $$
 DELIMITER ;
