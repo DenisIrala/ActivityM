@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import UsernameInput from "../components/UsernameInput";
@@ -13,6 +13,15 @@ type LoginFormData = {
 };
 
 const Login = () => {
+
+  useEffect(() => {
+      document.title = 'ActivityM';
+      // You can also include cleanup logic if needed
+      return () => {
+        document.title = ''; // Reset title on unmount (optional)
+      };
+    }, [])
+
   const [formData, setFormData] = useState<LoginFormData>({
     username: "",
     password: "",
