@@ -114,16 +114,15 @@ app.post('/login', async (req, res) => {
     }
 
     const token = jwt.sign(
-      { accID: user.accID, username: user.username },
+      { accID: user.accID, username: username },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
-
+   //console.log(user.accID+" "+username)
     res.json({
-      message: 'Login successful',
-      token,
-      accID: user.accID,
-      username: user.username
+      message: 'Login successfully',
+      username: username,
+      token: token,
     });
 
 
@@ -137,7 +136,7 @@ app.post('/login', async (req, res) => {
 });
 
 //Authentication verification
-
+/*
 app.get('/me', async (req, res) => {
   const token = req.headers.authorization?.split(' ')[1];
   
@@ -155,13 +154,16 @@ app.get('/me', async (req, res) => {
     res.status(401).json({ error: 'Invalid token' });
   }
 });
-
+*/
 
 // LIST PROCEDURES -----------------------------
 
 app.post("/addList", async(req,res)=>{
-  const name= req.body.name;
-  const ownerID=req.body.ownerID;
+  const token = req.body.token;
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  console.log("decode "+decoded.username+" "+decoded.accID);
+  const name= decoded.username;
+  const ownerID=decoded.accID;
   try{
     await pool.query('CALL addList(?, ?)', [ownerID, name]);
     res.send("Success");
@@ -173,7 +175,9 @@ app.post("/addList", async(req,res)=>{
 });
 
 app.get("/getLists", async (req,res)=>{
-  const ownerID=req.query.ownerID;
+  const token = req.query.token;
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const ownerID= decoded.accID;
   if (!ownerID) {
     return res.status(400).json({ error: 'ownerID is required' }); // Handle missing ownerID
   }
@@ -188,8 +192,12 @@ app.get("/getLists", async (req,res)=>{
 
 app.put("/updateList", async (req,res)=>{
   const newName= req.body.newName;
-  const accountID= req.body.accountID;
   const listID= req.body.listID;
+
+  const token = req.body.token;
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const accountID= decoded.accID;
+  
   try{
     await pool.query('CALL updateList(?, ?, ?)', [listID, accountID, newName]);
     res.send("Success");
@@ -207,8 +215,11 @@ app.put("/updateList", async (req,res)=>{
   });
 })
 
-app.delete("/deleteList/:listID/:ownerID", async (req,res)=>{
-  const { listID, ownerID } = req.params;
+app.delete("/deleteList/:listID/:token", async (req,res)=>{
+  const { listID, token } = req.params;
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+  const ownerID=decoded.accID;
 
   try {
     const [result] = await pool.query('CALL deleteList(?, ?)', [listID, ownerID]);
