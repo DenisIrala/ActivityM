@@ -161,7 +161,7 @@ app.get('/me', async (req, res) => {
 app.post("/addList", async(req,res)=>{
   const token = req.body.token;
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  console.log("decode "+decoded.username+" "+decoded.accID);
+  //console.log("decode "+decoded.username+" "+decoded.accID);
   const name= decoded.username;
   const ownerID=decoded.accID;
   try{

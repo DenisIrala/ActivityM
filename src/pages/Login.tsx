@@ -61,8 +61,8 @@ const Login = () => {
 
       console.log("Login successful:", response.data);
       localStorage.setItem("token", response.data.token);
-      console.log(response.data.token);
-      console.log(response.data.username);
+    //  console.log(response.data.token);
+     // console.log(response.data.username);
       localStorage.setItem("username", response.data.username);
       
       navigate("/home"); // Redirect after successful login
