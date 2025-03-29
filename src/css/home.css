@@ -84,7 +84,7 @@ h1 {
   position: relative;
 }
 
-/// new
+/* new */
 .list-clickable {
   flex: 1;
   cursor: pointer;
@@ -103,8 +103,6 @@ h1 {
 .list-footer button {
   margin: 0 4px;
 }
-
-////
 
 .add-list {
   display: flex;
