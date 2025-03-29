@@ -11,6 +11,12 @@ const Deadlines: FC = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
+  useEffect(() => {
+    fetchLists();
+    fetchTasks();
+    loadGoogleCharts();
+  }, []);
+
   const fetchLists = async () => {
     try {
       const apiUrl = `${import.meta.env.VITE_API_BASE_URL || ""}/getLists?token=${token}`;
@@ -46,52 +52,55 @@ const Deadlines: FC = () => {
       }
 
       setTasks(response.data);
-      updateTimeline(response.data);
+      drawChart(response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
   };
 
-  useEffect(() => {
-    fetchLists();
-    fetchTasks();
-  }, []);
+  const loadGoogleCharts = () => {
+    const script = document.createElement("script");
+    script.src = "https://www.gstatic.com/charts/loader.js";
+    script.async = true;
+    script.onload = () => {
+      window.google.charts.load("current", { packages: ["timeline"] });
+      window.google.charts.setOnLoadCallback(() => drawChart(tasks));
+    };
+    document.body.appendChild(script);
+  };
 
-  const updateTimeline = (tasks: any[]) => {
-    const timelineScript = `
-      google.charts.load("current", {packages:["timeline"]});
-      google.charts.setOnLoadCallback(drawChart);
-      
-      function drawChart() {
-          var container = document.getElementById('timeline');
-          var chart = new google.visualization.Timeline(container);
-          var dataTable = new google.visualization.DataTable();
+  const drawChart = (taskData: any[]) => {
+    if (!window.google || !window.google.visualization) {
+      console.warn("Google Charts not yet loaded");
+      return;
+    }
 
-          dataTable.addColumn({ type: 'string', id: 'List' });
-          dataTable.addColumn({ type: 'string', id: 'Task' });
-          dataTable.addColumn({ type: 'date', id: 'Start' });
-          dataTable.addColumn({ type: 'date', id: 'End' });
+    const container = document.getElementById("timeline");
+    if (!container) return;
 
-          dataTable.addRows([
-              ${tasks
-                .map(
-                  (task) => `['List ${task.listID}', '${task.taskName}', new Date('${task.dueDate}'), new Date('${task.dueDate}')]`
-                )
-                .join(",")}
-          ]);
+    const chart = new window.google.visualization.Timeline(container);
+    const dataTable = new window.google.visualization.DataTable();
 
-          var options = {
-              timeline: { showRowLabels: true },
-              height: 400
-          };
+    dataTable.addColumn({ type: "string", id: "List" });
+    dataTable.addColumn({ type: "string", id: "Task" });
+    dataTable.addColumn({ type: "date", id: "Start" });
+    dataTable.addColumn({ type: "date", id: "End" });
 
-          chart.draw(dataTable, options);
-      }
-    `;
+    dataTable.addRows(
+      taskData.map((task) => [
+        `List ${task.listID}`,
+        task.taskName,
+        new Date(task.dueDate),
+        new Date(task.dueDate),
+      ])
+    );
 
-    const scriptElement = document.createElement("script");
-    scriptElement.innerHTML = timelineScript;
-    document.body.appendChild(scriptElement);
+    const options = {
+      timeline: { showRowLabels: true },
+      height: 400,
+    };
+
+    chart.draw(dataTable, options);
   };
 
   return (
@@ -122,3 +131,4 @@ const Deadlines: FC = () => {
 };
 
 export default Deadlines;
+
