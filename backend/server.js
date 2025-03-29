@@ -156,14 +156,31 @@ app.get('/me', async (req, res) => {
 });
 */
 
+const verifyAuthentication = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'No token provided or invalid format.' });
+  }
+  const token = authHeader.split(' ')[1]; // Extract the token after "Bearer "
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(403).json({ message: 'Failed to authenticate token.' });
+    }
+    console.log(decoded.accID+" "+decoded.username);
+    req.accID = decoded.accID;
+    req.username = decoded.username;
+    next();
+  });
+
+}
+
 // LIST PROCEDURES -----------------------------
 
-app.post("/addList", async(req,res)=>{
-  const token = req.body.token;
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+app.post("/addList",verifyAuthentication, async(req,res)=>{
   //console.log("decode "+decoded.username+" "+decoded.accID);
-  const name= decoded.username;
-  const ownerID=decoded.accID;
+  const name= req.username;
+  const ownerID=req.accID;
   try{
     await pool.query('CALL addList(?, ?)', [ownerID, name]);
     res.send("Success");
@@ -174,10 +191,8 @@ app.post("/addList", async(req,res)=>{
 
 });
 
-app.get("/getLists", async (req,res)=>{
-  const token = req.query.token;
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  const ownerID= decoded.accID;
+app.get("/getLists",verifyAuthentication, async (req,res)=>{
+  const ownerID= req.accID;
   if (!ownerID) {
     return res.status(400).json({ error: 'ownerID is required' }); // Handle missing ownerID
   }
@@ -190,7 +205,7 @@ app.get("/getLists", async (req,res)=>{
   }
 })
 
-app.put("/updateList", async (req,res)=>{
+app.put("/updateList",verifyAuthentication, async (req,res)=>{
   const newName= req.body.newName;
   const listID= req.body.listID;
 
@@ -215,11 +230,9 @@ app.put("/updateList", async (req,res)=>{
   });
 })
 
-app.delete("/deleteList/:listID/:token", async (req,res)=>{
-  const { listID, token } = req.params;
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-  const ownerID=decoded.accID;
+app.delete("/deleteList/:listID",verifyAuthentication, async (req,res)=>{
+  const listID = req.params;
+  const ownerID=req.accID;
 
   try {
     const [result] = await pool.query('CALL deleteList(?, ?)', [listID, ownerID]);

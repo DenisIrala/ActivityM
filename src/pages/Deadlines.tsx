@@ -14,7 +14,7 @@ const Deadlines: FC = () => {
 
   const fetchLists = async () => {
     try {
-      const apiUrl = `${import.meta.env.VITE_API_BASE_URL || ""}/getLists?token=${token}`;
+      const apiUrl = `${import.meta.env.VITE_API_BASE_URL || ""}/getLists`;
       const response = await axios.get(apiUrl, {
         headers: { Authorization: `Bearer ${token}` },
       });

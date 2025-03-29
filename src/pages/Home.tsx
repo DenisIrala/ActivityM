@@ -24,7 +24,7 @@ const Home: FC = () => {
       }/getLists?token=${token}`;
 
       const response = await axios.get(apiUrl, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { "Authorization": `Bearer ${token}` },
       });
 
       if (!Array.isArray(response.data)) {
