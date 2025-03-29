@@ -12,14 +12,9 @@ const Deadlines: FC = () => {
 
   const token = localStorage.getItem("token");
 
-  if (!token) {
-    navigate("/login");
-    return <div>Redirecting to login...</div>;
-  }
-
   const fetchLists = async () => {
     try {
-      const apiUrl = `${import.meta.env.VITE_API_BASE_URL || ""}/getLists?token=${token}`;
+      const apiUrl = `${import.meta.env.VITE_API_BASE_URL || ""}/getLists`;
       const response = await axios.get(apiUrl, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -40,7 +35,7 @@ const Deadlines: FC = () => {
     try {
       let allTasks = [];
       for (const listID of listIDs) {
-        const response = await apiRequest("GET", `getTasks/${listID}?token=${token}`);
+        const response = await apiRequest("GET", `getTasks/${listID}`);
         if (Array.isArray(response)) {
           allTasks.push(...response.map((task) => ({ ...task, listID })));
         }
