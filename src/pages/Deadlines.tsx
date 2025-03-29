@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; 
-import { apiRequest } from "../services/apiService"; 
+import { apiRequest } from "../services/apiService";
+import axios from "axios";
 
 const Deadlines: FC = () => {
   const navigate = useNavigate();
@@ -10,8 +10,11 @@ const Deadlines: FC = () => {
     { listID: number; taskID: number; taskName: string; dueDate: string }[]
   >([]);
 
+  const token = localStorage.getItem("token");
+
+  const fetchLists = async () => {
     try {
-      const apiUrl = `${import.meta.env.VITE_API_BASE_URL || ""}/getLists?token=${token}`;
+      const apiUrl = `${import.meta.env.VITE_API_BASE_URL || ""}/getLists`;
       const response = await axios.get(apiUrl, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -22,17 +25,17 @@ const Deadlines: FC = () => {
       }
 
       setLists(response.data);
-      fetchTasksForLists(response.data.map((list) => list.listID));
+      fetchTasksForLists(response.data.map((list) => list.listID)); 
     } catch (error) {
       console.error("Error fetching lists:", error);
     }
   };
-
+  
   const fetchTasksForLists = async (listIDs: number[]) => {
     try {
       let allTasks = [];
       for (const listID of listIDs) {
-        const response = await apiRequest("GET", `getTasks/${listID}?token=${token}`);
+        const response = await apiRequest("GET", `getTasks/${listID}`);
         if (Array.isArray(response)) {
           allTasks.push(...response.map((task) => ({ ...task, listID })));
         }
@@ -91,7 +94,7 @@ const Deadlines: FC = () => {
 
   return (
     <div>
-      <h1>Deadline Timeline (Test Mode)</h1>
+      <h1>Deadline Timeline</h1>
 
       {/* Inject generated script into an iframe or external page */}
       <iframe
