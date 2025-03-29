@@ -1,24 +1,23 @@
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
 const app = express();
 const port = 3000;
-const mysql = require('mysql2/promise');
-const bcrypt = require('bcryptjs');
-const { OAuth2Client } = require('google-auth-library');
-const jwt =require('jsonwebtoken');
+const mysql = require("mysql2/promise");
+const bcrypt = require("bcryptjs");
+const { OAuth2Client } = require("google-auth-library");
+const jwt = require("jsonwebtoken");
 const secret = process.env.JWT_SECRET;
-const expiresIn = process.env.JWT_EXPIRES_IN || '1h';
+const expiresIn = process.env.JWT_EXPIRES_IN || "1h";
 
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config();
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
 }
 const DBP = process.env.DB_PASSWORD;
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 
-
 const config = {
-  host: 'localhost',
+  host: "localhost",
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
@@ -28,37 +27,38 @@ const config = {
 };
 
 const client = new OAuth2Client(GOOGLE_CLIENT_ID); // Google OAuth client
-let pool= mysql.createPool(config);
+let pool = mysql.createPool(config);
 
 //Middleware
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../dist')));
+app.use(express.static(path.join(__dirname, "../dist")));
 
 //Endpoints
 
-
 // Register Endpoint
-app.post('/register', async (req, res) => {
+app.post("/register", async (req, res) => {
   const { username, pass } = req.body;
-  
+
   if (!username || !pass) {
-    return res.status(400).json({ error: 'Username and password are required' });
+    return res
+      .status(400)
+      .json({ error: "Username and password are required" });
   }
 
   let connection;
   try {
     connection = await mysql.createConnection(config);
-    
+
     // Check if username exists
     const [users] = await connection.execute(
-      'SELECT accID FROM Accounts WHERE username = ?',
+      "SELECT accID FROM Accounts WHERE username = ?",
       [username]
     );
-    
+
     if (users.length > 0) {
-      return res.status(409).json({ error: 'Username already exists' });
+      return res.status(409).json({ error: "Username already exists" });
     }
 
     // Hash password
@@ -66,70 +66,68 @@ app.post('/register', async (req, res) => {
 
     // Create new user
     const [result] = await connection.execute(
-      'INSERT INTO Accounts (username, pass) VALUES (?, ?)',
+      "INSERT INTO Accounts (username, pass) VALUES (?, ?)",
       [username, hashedPassword]
     );
 
     res.status(201).json({
-      message: 'User created successfully',
-      accID: result.insertId
+      message: "User created successfully",
+      accID: result.insertId,
     });
-
   } catch (error) {
-    console.error('Registration error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Registration error:", error);
+    res.status(500).json({ error: "Internal server error" });
   } finally {
     if (connection) await connection.end();
   }
 });
 
 // Login Endpoint
-app.post('/login', async (req, res) => {
+app.post("/login", async (req, res) => {
   const { username, pass } = req.body;
 
   if (!username || !pass) {
-    return res.status(400).json({ error: 'Username and password are required' });
+    return res
+      .status(400)
+      .json({ error: "Username and password are required" });
   }
 
   let connection;
   try {
     connection = await mysql.createConnection(config);
-    
+
     // Get user from database
     const [users] = await connection.execute(
-      'SELECT accID, pass FROM Accounts WHERE username = ?',
+      "SELECT accID, pass FROM Accounts WHERE username = ?",
       [username]
     );
 
     if (users.length === 0) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return res.status(401).json({ error: "Invalid credentials" });
     }
 
     const user = users[0];
-    
+
     // Compare passwords
     const validPassword = await bcrypt.compare(pass, user.pass);
     if (!validPassword) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return res.status(401).json({ error: "Invalid credentials" });
     }
 
     const token = jwt.sign(
       { accID: user.accID, username: username },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: "1h" }
     );
-   //console.log(user.accID+" "+username)
+    //console.log(user.accID+" "+username)
     res.json({
-      message: 'Login successfully',
+      message: "Login successfully",
       username: username,
       token: token,
     });
-
-
-
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Login error:", error);
+    res.status(500).json({ error: "Internal server error" });
   } finally {
     if (connection) await connection.end();
   }
@@ -159,81 +157,82 @@ app.get('/me', async (req, res) => {
 const verifyAuthentication = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'No token provided or invalid format.' });
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res
+      .status(401)
+      .json({ message: "No token provided or invalid format." });
   }
-  const token = authHeader.split(' ')[1]; // Extract the token after "Bearer "
+  const token = authHeader.split(" ")[1]; // Extract the token after "Bearer "
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
-      return res.status(403).json({ message: 'Failed to authenticate token.' });
+      return res.status(403).json({ message: "Failed to authenticate token." });
     }
-  //  console.log(decoded.accID+" "+decoded.username);
+    //  console.log(decoded.accID+" "+decoded.username);
     req.accID = decoded.accID;
     req.username = decoded.username;
     next();
   });
-
-}
+};
 
 // LIST PROCEDURES -----------------------------
 
-app.post("/addList",verifyAuthentication, async(req,res)=>{
+app.post("/addList", verifyAuthentication, async (req, res) => {
   //console.log("decode "+decoded.username+" "+decoded.accID);
-  const name= req.username;
-  const ownerID=req.accID;
-  try{
-    await pool.query('CALL addList(?, ?)', [ownerID, name]);
-    res.send("Success");
-  }catch (err) {
-    console.error('Database query error:', err);
-    res.status(500).json({ error: 'Database error' });
-  }
 
+  // below line breaks the add logic
+  // const name= req.username;
+
+  const name = req.body.name;
+  const ownerID = req.accID;
+  try {
+    await pool.query("CALL addList(?, ?)", [ownerID, name]);
+    res.send("Success");
+  } catch (err) {
+    console.error("Database query error:", err);
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
-app.get("/getLists",verifyAuthentication, async (req,res)=>{
-  const ownerID= req.accID;
+app.get("/getLists", verifyAuthentication, async (req, res) => {
+  const ownerID = req.accID;
   if (!ownerID) {
-    return res.status(400).json({ error: 'ownerID is required' }); // Handle missing ownerID
+    return res.status(400).json({ error: "ownerID is required" }); // Handle missing ownerID
   }
-  try{
-    const [results] = await pool.query('CALL getLists(?)', [ownerID]);
+  try {
+    const [results] = await pool.query("CALL getLists(?)", [ownerID]);
     res.json(results[0]);
-  }catch (err) {
-    console.error('Database query error:', err);
-    res.status(500).json({ error: 'Database error' });
+  } catch (err) {
+    console.error("Database query error:", err);
+    res.status(500).json({ error: "Database error" });
   }
-})
+});
 
-app.put("/updateList",verifyAuthentication, async (req,res)=>{
-  const newName= req.body.newName;
-  const listID= req.body.listID;
-
-  const accountID= req.accID;
-  
-  try{
-    await pool.query('CALL updateList(?, ?, ?)', [listID, accountID, newName]);
-    res.send("Success");
-  }catch (err) {
-    console.error('Database query error:', err);
-    res.status(500).json({ error: 'Database error' });
-  }
-
-  pool.query('CALL updateList(?, ?, ?)',[listID, accountID, newName], (err, result) => {
-    if (err) {
-      console.error('Error executing query', err);
-    } else {
-      res.send("Success!");
-    }
-  });
-})
-
-app.delete("/deleteList/:listID",verifyAuthentication, async (req,res)=>{
-  const listID = req.params;
-  const ownerID=req.accID;
+app.put("/updateList", verifyAuthentication, async (req, res) => {
+  const newName = req.body.newName;
+  const listID = req.body.listID;
+  const accountID = req.accID;
 
   try {
-    const [result] = await pool.query('CALL deleteList(?, ?)', [listID, ownerID]);
+    await pool.query("CALL updateList(?, ?, ?)", [listID, accountID, newName]);
+    res.send("Success");
+  } catch (err) {
+    console.error("Database query error:", err);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+app.delete("/deleteList/:listID", verifyAuthentication, async (req, res) => {
+  // below line breaks the delete logic
+  // const listID = req.params;
+
+  const listID = req.params.listID;
+  const ownerID = req.accID;
+
+  try {
+    const [result] = await pool.query("CALL deleteList(?, ?)", [
+      listID,
+      ownerID,
+    ]);
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: "List not found or unauthorized" });
@@ -245,78 +244,86 @@ app.delete("/deleteList/:listID",verifyAuthentication, async (req,res)=>{
     res.status(500).json({ error: "Database error" });
   }
 });
-
-
 
 // TASK PROCEDURES -----------------------------
 
-app.get("/getTasks", async (req,res)=>{
+app.get("/getTasks", async (req, res) => {
   const listID = req.query.listID;
   if (!listID) {
-    return res.status(400).json({ error: 'listID is required' });
+    return res.status(400).json({ error: "listID is required" });
   }
-  try{
-    const [results] = await pool.query('CALL getTasks(?)', [listID]);
+  try {
+    const [results] = await pool.query("CALL getTasks(?)", [listID]);
     res.json(results[0]);
-  }catch (err) {
-    console.error('Database query error:', err);
-    res.status(500).json({ error: 'Database error' });
+  } catch (err) {
+    console.error("Database query error:", err);
+    res.status(500).json({ error: "Database error" });
   }
 });
 
-app.post("/addTask", async(req,res)=>{
+app.post("/addTask", async (req, res) => {
   const listID = req.body.listID;
   const taskDescription = req.body.taskDescription;
-  const taskTime=req.body.taskTime;
-  try{
-    await pool.query('CALL addTask(?, ?, ?)', [listID, taskDescription, taskTime]);
+  const taskTime = req.body.taskTime;
+  try {
+    await pool.query("CALL addTask(?, ?, ?)", [
+      listID,
+      taskDescription,
+      taskTime,
+    ]);
     res.send("Success");
-  }catch (err) {
-    console.error('Database query error:', err);
-    res.status(500).json({ error: 'Database error' });
+  } catch (err) {
+    console.error("Database query error:", err);
+    res.status(500).json({ error: "Database error" });
   }
-
 });
 
-app.post("/markTask", async(req,res)=>{
+app.post("/markTask", async (req, res) => {
   const itemID = req.body.itemID;
   const taskMark = req.body.taskMark;
-  try{
-    await pool.query('CALL markTask(?, ?)', [itemID, taskMark]);
+  try {
+    await pool.query("CALL markTask(?, ?)", [itemID, taskMark]);
     res.send("Success");
-  }catch (err) {
-    console.error('Database query error:', err);
-    res.status(500).json({ error: 'Database error' });
+  } catch (err) {
+    console.error("Database query error:", err);
+    res.status(500).json({ error: "Database error" });
   }
-
 });
 
-app.put("/updateTask", async (req,res)=>{
+app.put("/updateTask", async (req, res) => {
   const itemID = req.body.itemID;
   const newDescription = req.body.newDescription;
   const newTime = req.body.newTime;
-  try{
-    await pool.query('CALL updateTask(?, ?, ?)', [itemID, newDescription, newTime]);
+  try {
+    await pool.query("CALL updateTask(?, ?, ?)", [
+      itemID,
+      newDescription,
+      newTime,
+    ]);
     res.send("Success");
-  }catch (err) {
-    console.error('Database query error:', err);
-    res.status(500).json({ error: 'Database error' });
+  } catch (err) {
+    console.error("Database query error:", err);
+    res.status(500).json({ error: "Database error" });
   }
 
-  pool.query('CALL updateTask(?, ?, ?)', [itemID, newDescription, newTime], (err, result) => {
-    if (err) {
-      console.error('Error executing query', err);
-    } else {
-      res.send("Success!");
+  pool.query(
+    "CALL updateTask(?, ?, ?)",
+    [itemID, newDescription, newTime],
+    (err, result) => {
+      if (err) {
+        console.error("Error executing query", err);
+      } else {
+        res.send("Success!");
+      }
     }
-  });
-})
+  );
+});
 
-app.delete("/deleteTask/:itemID", async (req,res)=>{
+app.delete("/deleteTask/:itemID", async (req, res) => {
   const { itemID } = req.params;
 
   try {
-    const [result] = await pool.query('CALL deleteTask(?)', [itemID]);
+    const [result] = await pool.query("CALL deleteTask(?)", [itemID]);
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: "List not found or unauthorized" });
@@ -329,10 +336,8 @@ app.delete("/deleteTask/:itemID", async (req,res)=>{
   }
 });
 
-
-
 // OAuth 2.0 Google Login Endpoint
-app.post('/google-login', async (req, res) => {
+app.post("/google-login", async (req, res) => {
   const { token } = req.body;
 
   try {
@@ -350,7 +355,7 @@ app.post('/google-login', async (req, res) => {
 
       // Check if user exists
       const [users] = await connection.execute(
-        'SELECT accID FROM Accounts WHERE username = ?',
+        "SELECT accID FROM Accounts WHERE username = ?",
         [googleUsername]
       );
 
@@ -358,7 +363,7 @@ app.post('/google-login', async (req, res) => {
       if (users.length === 0) {
         // Create new user (no password needed for Google login)
         const [result] = await connection.execute(
-          'INSERT INTO Accounts (username) VALUES (?)',
+          "INSERT INTO Accounts (username) VALUES (?)",
           [googleUsername]
         );
         accID = result.insertId;
@@ -366,26 +371,26 @@ app.post('/google-login', async (req, res) => {
         accID = users[0].accID;
       }
 
-      res.json({ message: 'Google login successful', accID: accID });
+      res.json({ message: "Google login successful", accID: accID });
     } catch (error) {
-      console.error('Google login error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      console.error("Google login error:", error);
+      res.status(500).json({ error: "Internal server error" });
     } finally {
       if (connection) await connection.end();
     }
   } catch (error) {
-    console.error('Google token verification error:', error);
-    res.status(401).json({ error: 'Invalid Google token' });
+    console.error("Google token verification error:", error);
+    res.status(401).json({ error: "Invalid Google token" });
   }
 });
 
 // Existing routes
-app.get('/', (req, res) => {
-  res.send('Hello World!');
+app.get("/", (req, res) => {
+  res.send("Hello World!");
 });
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../dist', 'index.html'));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../dist", "index.html"));
 });
 
 app.listen(port, () => {

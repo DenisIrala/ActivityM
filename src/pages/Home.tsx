@@ -3,6 +3,8 @@ import { clearAuth } from "../authUtils";
 import { useNavigate } from "react-router-dom";
 import { apiRequest } from "../services/apiService";
 import axios from "axios";
+// import home css from css folder
+import "../css/Home.css";
 
 const Home: FC = () => {
   const navigate = useNavigate();
@@ -18,13 +20,12 @@ const Home: FC = () => {
 
   const fetchLists = async () => {
     try {
-
       const apiUrl = `${
         import.meta.env.VITE_API_BASE_URL || ""
       }/getLists?token=${token}`;
 
       const response = await axios.get(apiUrl, {
-        headers: { "Authorization": `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (!Array.isArray(response.data)) {
@@ -54,12 +55,14 @@ const Home: FC = () => {
   };
 
   const handleAddList = async () => {
-    console.log(username);
-    console.log(token);
+    console.log("username:", username);
+    console.log("token:", token);
     if (!newListName.trim()) return;
 
     try {
-      await apiRequest("POST", "addList", { name: newListName, token });
+      console.log("Sending payload:", { name: newListName });
+      await apiRequest("POST", "addList", { name: newListName });
+
       console.log("List added successfully!");
       setNewListName("");
       fetchLists();
@@ -108,65 +111,85 @@ const Home: FC = () => {
     }
   };
 
-
   return (
-    <div>
-      <h1>Home Page</h1>
-      <h2>Welcome, {username}!</h2>
-      <button onClick={() => navigate(`/deadlines`)}>
-                  Navigate to Deadlines
-                </button>
-      <h3>Your Lists:</h3>
-      <ul>
-        {lists.map((list) => (
-          <li key={list.listID}>
-            {editingListId === list.listID ? (
-              <>
-                <input
-                  type="text"
-                  value={editedListName}
-                  onChange={(e) => setEditedListName(e.target.value)}
-                />
-                <button onClick={() => handleSaveEdit(list.listID)}>
-                  Save
-                </button>
-              </>
-            ) : (
-              <>
-                {/* Clicking on a list navigates to /list/:id */}
-                <span
-                  style={{
-                    cursor: "pointer",
-                    textDecoration: "underline",
-                    color: "blue",
-                  }}
-                  onClick={() => navigate(`/list/${list.listID}`)}
-                >
-                  {list.listName}
-                </span>
-                <button
-                  onClick={() => handleEditList(list.listID, list.listName)}
-                >
-                  Edit
-                </button>
-                <button onClick={() => handleRemoveList(list.listID)}>
-                  Delete
-                </button>
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
+    <div className="app-container">
+      <div className="sidebar">
+        <div className="logo">ActivityM</div>
+        <p><i>Welcome, {username}!</i></p>
+        <ul className="nav-list">
+          <li onClick={() => navigate(`/deadlines`)}>Deadlines</li>
+          <li onClick={handleLogout}>Logout</li>
+        </ul>
+      </div>
 
-      <input
-        type="text"
-        placeholder="Enter new list name"
-        value={newListName}
-        onChange={(e) => setNewListName(e.target.value)}
-      />
-      <button onClick={handleAddList}>Add List</button>
+      <div className="main-content">
+        <h1 className="page-title">Your Lists:</h1>
 
-      <button onClick={handleLogout}>Logout</button>
+        <div className="list-container">
+          {/* add new list card */}
+          <div className="list-item add-list-card">
+            <input
+              type="text"
+              placeholder="Enter new list name"
+              value={newListName}
+              onChange={(e) => setNewListName(e.target.value)}
+            />
+            <button onClick={handleAddList}>Add a new list</button>
+            <div className="add-icon">+</div>
+          </div>
+
+          {/* existing lists */}
+          {lists.map((list) => (
+            <div key={list.listID} className="list-item">
+              <div
+                className="list-clickable"
+                onClick={() => navigate(`/list/${list.listID}`)}
+              >
+                {/* add something visual here */}
+              </div>
+
+              <div className="list-footer">
+                {editingListId === list.listID ? (
+                  <>
+                    <input
+                      type="text"
+                      value={editedListName}
+                      onChange={(e) => setEditedListName(e.target.value)}
+                    />
+                    <button onClick={() => handleSaveEdit(list.listID)}>
+                      Save
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    {/* Clicking on a list navigates to /list/:id */}
+                    <span
+                      style={{
+                        cursor: "pointer",
+                        textDecoration: "underline",
+                        color: "blue",
+                      }}
+                      onClick={() => navigate(`/list/${list.listID}`)}
+                    >
+                      {list.listName}
+                    </span>
+                    <button
+                      onClick={() => handleEditList(list.listID, list.listName)}
+                    >
+                      Edit
+                    </button>
+                    <button onClick={() => handleRemoveList(list.listID)}>
+                      Delete
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* <button onClick={handleLogout}>Logout</button> */}
+      </div>
     </div>
   );
 };

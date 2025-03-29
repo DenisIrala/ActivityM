@@ -123,7 +123,7 @@ const Deadlines: FC = () => {
         style={{ width: "100%", height: "600px", border: "none" }}
       ></iframe>
 
-      <button onClick={() => navigate("/")}>Back to Home</button>
+      <button onClick={() => navigate("/home")}>Back to Home</button>
     </div>
   );
 };

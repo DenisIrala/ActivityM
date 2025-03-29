@@ -1,106 +1,156 @@
 body {
-    font-family: Fredoka, Fredoka;
-    background-color: #f8feff;
-    margin: 0;
-    display: flex;
+  background-color: #f8feff;
+  margin: 0;
+  display: block;
 }
 
 .app-container {
-    display: flex;
-    max-width: 1200px; /* Adjust as needed */
-    margin: 0 auto;
-    width: 100%;
+  width: 98%;
 }
 
+.page-title {
+  /* text-align: left; */
+  /* align-self: flex-start; */
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  margin-top: 1rem;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 20px;
+}
 .sidebar {
-    width: 200px; /* Fixed width for the sidebar */
-    background-color: #e0f7fa;
-    color: black;
-    padding: 20px;
+  width: 10%;
+  background-color: #e0f7fa;
+  color: black;
+  padding: 20px;
 }
 
 .nav-list {
-    list-style-type: none;
-    padding: 0;
+  list-style-type: none;
+  padding: 0;
 }
 
 .nav-list li {
-    margin: 15px 0;
+  margin: 15px 0;
+  width: 10%;
 }
 
-    .nav-list li:hover {
-        text-decoration: underline;
-        cursor: pointer;
-    }
+.nav-list li:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
 
 .main-content {
-    flex: 1; /* This will take the remaining space */
-    padding: 20px;
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
 h1 {
-    text-align: center;
+  text-align: center;
 }
 
 .list-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 50px;
+  width: 75%;
+  justify-items: center;
+  margin: auto;
 }
 
 .list-item {
-    background-color: #e0f7fa;
-    padding: 20px;
-    border-radius: 5px;
-    text-align: center;
+  width: 100%;
+  background-color: white;
+  border-radius: 20px;
+  border: 6px solid #b7dfdd;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 180px;
+  overflow: hidden;
+  position: relative;
 }
+
+/// new
+.list-clickable {
+  flex: 1;
+  cursor: pointer;
+}
+.list-footer {
+  background-color: #b7dfdd;
+  text-align: center;
+  padding: 10px;
+  font-weight: 500;
+  font-size: 14px;
+}
+.list-footer span {
+  display: block;
+  margin-bottom: 6px;
+}
+.list-footer button {
+  margin: 0 4px;
+}
+
+////
 
 .add-list {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #b2ebf2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #b2ebf2;
 }
 
-/*.add-list button {
-    background-color: #007bff; /* Button color 
-    color: white; /* Text color 
-    border: none; /* Remove border 
-    padding: 10px 20px; /* Spacing inside button 
-    border-radius: 5px; /* Rounded corners 
-    font-size: 16px; /* Text size 
-    cursor: pointer; /* Pointer on hover 
-    transition: background-color 0.3s; /* Smooth transition for hover effect 
+.add-list-card {
+  border: 2px solid #b2ebf2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }
 
-.add-list button:hover {
-    background-color: #0056b3; /* Darker shade on hover 
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for effect  
-} */
+.add-icon {
+  font-size: 2rem;
+  color: #007b7f;
+  margin-bottom: 10px;
+}
 
 .button-container {
-    display: flex;
-    justify-content: center; /* Center the button */
-    margin: 20px; /* Space around the button */
+  display: flex;
+  justify-content: center;
+  margin: 20px;
 }
 
 .add-list-button {
-    background-color: #EAF8F8; /* Light background */
-    border: 2px solid #B2E1E1; /* Light border */
-    border-radius: 12px; /* Rounded corners */
-    padding: 15px 20px; /* Padding inside the button */
-    font-size: 16px; /* Font size */
-    font-weight: bold; /* Bold text */
-    color: #007B7F; /* Text color */
-    cursor: pointer; /* Pointer on hover */
-    display: flex; /* Flex for icon and text alignment */
-    align-items: center; /* Center items vertically */
+  background-color: #eaf8f8; /* Light background */
+  border: 2px solid #b2e1e1; /* Light border */
+  border-radius: 12px; /* Rounded corners */
+  padding: 15px 20px; /* Padding inside the button */
+  font-size: 16px; /* Font size */
+  font-weight: bold; /* Bold text */
+  color: #007b7f; /* Text color */
+  cursor: pointer; /* Pointer on hover */
+  display: flex; /* Flex for icon and text alignment */
+  align-items: center; /* Center items vertically */
 }
 
 .add-list-button:hover {
-    background-color: #D1F0F0; /* Darker background on hover */
+  background-color: #d1f0f0; /* Darker background on hover */
 }
 
 .plus-icon {
-    margin-right: 8px; /* Space between icon and text */
+  margin-right: 8px; /* Space between icon and text */
 }
