@@ -1,20 +1,24 @@
 import { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; 
-import { apiRequest } from "../services/apiService"; 
+import axios from "axios";
 
 const Deadlines: FC = () => {
-  const navigate = useNavigate();
   const [lists, setLists] = useState<{ listID: number; listName: string }[]>([]);
   const [tasks, setTasks] = useState<
     { listID: number; taskID: number; taskName: string; dueDate: string }[]
   >([]);
 
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+
+  const fetchLists = async () => {
     try {
       const apiUrl = `${import.meta.env.VITE_API_BASE_URL || ""}/getLists?token=${token}`;
       const response = await axios.get(apiUrl, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
+      console.log("Fetched Lists:", response.data);
 
       if (!Array.isArray(response.data)) {
         console.error("Error: API did not return an array!", response.data);
@@ -22,22 +26,27 @@ const Deadlines: FC = () => {
       }
 
       setLists(response.data);
-      fetchTasksForLists(response.data.map((list) => list.listID));
     } catch (error) {
       console.error("Error fetching lists:", error);
     }
   };
 
-  const fetchTasksForLists = async (listIDs: number[]) => {
+  const fetchTasks = async () => {
     try {
-      let allTasks = [];
-      for (const listID of listIDs) {
-        const response = await apiRequest("GET", `getTasks/${listID}?token=${token}`);
-        if (Array.isArray(response)) {
-          allTasks.push(...response.map((task) => ({ ...task, listID })));
-        }
+      const apiUrl = `${import.meta.env.VITE_API_BASE_URL || ""}/getTasks?token=${token}`;
+      const response = await axios.get(apiUrl, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      console.log("Fetched Tasks:", response.data);
+
+      if (!Array.isArray(response.data)) {
+        console.error("Error: API did not return an array!", response.data);
+        return;
       }
-      setTasks(allTasks);
+
+      setTasks(response.data);
+      updateTimeline(response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
@@ -45,26 +54,14 @@ const Deadlines: FC = () => {
 
   useEffect(() => {
     fetchLists();
+    fetchTasks();
   }, []);
 
-  const generateTimelineScript = () => {
-    const taskData = tasks
-      .map((task) => {
-        const listName = lists.find((list) => list.listID === task.listID)?.listName || "Unknown";
-        const dueDate = new Date(task.dueDate);
-        const startDate = new Date(dueDate);
-        startDate.setDate(dueDate.getDate() - 2); 
-
-        return `['${listName}', '${task.taskName}', new Date(${startDate.getFullYear()}, ${
-          startDate.getMonth()
-        }, ${startDate.getDate()}), new Date(${dueDate.getFullYear()}, ${dueDate.getMonth()}, ${dueDate.getDate()})]`;
-      })
-      .join(",\n");
-
-    return `
+  const updateTimeline = (tasks: any[]) => {
+    const timelineScript = `
       google.charts.load("current", {packages:["timeline"]});
       google.charts.setOnLoadCallback(drawChart);
-
+      
       function drawChart() {
           var container = document.getElementById('timeline');
           var chart = new google.visualization.Timeline(container);
@@ -76,7 +73,11 @@ const Deadlines: FC = () => {
           dataTable.addColumn({ type: 'date', id: 'End' });
 
           dataTable.addRows([
-              ${taskData}
+              ${tasks
+                .map(
+                  (task) => `['List ${task.listID}', '${task.taskName}', new Date('${task.dueDate}'), new Date('${task.dueDate}')]`
+                )
+                .join(",")}
           ]);
 
           var options = {
@@ -87,40 +88,35 @@ const Deadlines: FC = () => {
           chart.draw(dataTable, options);
       }
     `;
+
+    const scriptElement = document.createElement("script");
+    scriptElement.innerHTML = timelineScript;
+    document.body.appendChild(scriptElement);
   };
 
   return (
     <div>
-      <h1>Deadline Timeline (Test Mode)</h1>
-
-      {/* Inject generated script into an iframe or external page */}
-      <iframe
-        srcDoc={`
-          <!DOCTYPE html>
-          <html lang="en">
-          <head>
-              <meta charset="UTF-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>Task Deadlines</title>
-              <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-              <script type="text/javascript">
-                  ${generateTimelineScript()}
-              </script>
-              <style>
-                  body { font-family: Arial, sans-serif; text-align: center; }
-                  #timeline { width: 90%; height: 500px; margin: auto; }
-              </style>
-          </head>
-          <body>
-              <h2>Task Deadlines Timeline</h2>
-              <div id="timeline"></div>
-          </body>
-          </html>
-        `}
-        style={{ width: "100%", height: "600px", border: "none" }}
-      ></iframe>
+      <h1>Task Deadlines</h1>
 
       <button onClick={() => navigate("/")}>Back to Home</button>
+
+      <h3>Your Lists:</h3>
+      <ul>
+        {lists.map((list) => (
+          <li key={list.listID}>{list.listName}</li>
+        ))}
+      </ul>
+
+      <h3>Tasks:</h3>
+      <ul>
+        {tasks.map((task) => (
+          <li key={task.taskID}>
+            {task.taskName} - Due: {task.dueDate}
+          </li>
+        ))}
+      </ul>
+
+      <div id="timeline" style={{ width: "90%", height: "500px", margin: "auto" }}></div>
     </div>
   );
 };
