@@ -114,7 +114,7 @@ const Home: FC = () => {
     <div>
       <h1>Home Page</h1>
       <h2>Welcome, {username}!</h2>
-      <button onClick={() => handleRemoveList(list.listID)}>
+      <button onClick={() => navigate(`/deadlines`)}>
                   Navigate to Deadlines
                 </button>
       <h3>Your Lists:</h3>
