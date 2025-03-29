@@ -15,40 +15,50 @@ const Deadlines: FC = () => {
       const apiUrl = `${
         import.meta.env.VITE_API_BASE_URL || ""
       }/getLists?token=${token}`;
-
+  
       const response = await axios.get(apiUrl, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
+  
       if (!Array.isArray(response.data)) {
         console.error("Error: API did not return an array!", response.data);
         return;
       }
-
+  
       const allTasks: any[] = [];
-
+  
       for (const list of response.data) {
         const tasksResponse = await axios.get(
           `${
             import.meta.env.VITE_API_BASE_URL || ""
-          }/getTasks?listID=${list.listID}&token=${token}`,
+          }/getTasks?listID=${list.listID}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-
+  
         if (Array.isArray(tasksResponse.data)) {
+          console.log("Mapping taskresponse");
           tasksResponse.data.forEach((task: any) => {
+            const currentTime=new Date().toISOString();
+            console.log("Adding task");
+            console.log(currentTime+" "+task.time);
+            if(currentTime<task.time){
+              console.log("Passed the if statement");
+              console.log(list.listName);
+              console.log(task.description);
+              console.log(task.time);
             allTasks.push({
               listName: list.listName,
-              taskName: task.taskName,
-              startDate: task.startDate,
-              dueDate: task.dueDate,
+              taskName: task.description,
+              startDate: currentTime, // Set startDate to the current time in ISO 8601 format
+              dueDate: task.time,
             });
+          }
           });
         }
       }
-
+  
       setTasks(allTasks);
     } catch (error) {
       console.error("Error fetching tasks:", error);
