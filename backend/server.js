@@ -167,7 +167,7 @@ const verifyAuthentication = (req, res, next) => {
     if (err) {
       return res.status(403).json({ message: 'Failed to authenticate token.' });
     }
-    console.log(decoded.accID+" "+decoded.username);
+  //  console.log(decoded.accID+" "+decoded.username);
     req.accID = decoded.accID;
     req.username = decoded.username;
     next();
@@ -208,7 +208,7 @@ app.get("/getLists",verifyAuthentication, async (req,res)=>{
 app.put("/updateList",verifyAuthentication, async (req,res)=>{
   const newName= req.body.newName;
   const listID= req.body.listID;
-  
+
   const accountID= req.accID;
   
   try{
