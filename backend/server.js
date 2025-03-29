@@ -208,10 +208,8 @@ app.get("/getLists",verifyAuthentication, async (req,res)=>{
 app.put("/updateList",verifyAuthentication, async (req,res)=>{
   const newName= req.body.newName;
   const listID= req.body.listID;
-
-  const token = req.body.token;
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  const accountID= decoded.accID;
+  
+  const accountID= req.accID;
   
   try{
     await pool.query('CALL updateList(?, ?, ?)', [listID, accountID, newName]);

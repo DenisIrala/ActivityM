@@ -70,7 +70,7 @@ const Home: FC = () => {
 
   const handleRemoveList = async (id: number) => {
     try {
-      await apiRequest("DELETE", `deleteList/${id}/${token}`);
+      await apiRequest("DELETE", `deleteList/${id}`);
       console.log("List deleted successfully!");
       fetchLists();
     } catch (error) {
@@ -88,7 +88,6 @@ const Home: FC = () => {
     try {
       await apiRequest("PUT", "updateList", {
         listID: id,
-        token,
         newName: editedListName,
       });
 
