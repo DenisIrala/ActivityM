@@ -38,16 +38,16 @@ const Deadlines: FC = () => {
         );
   
         if (Array.isArray(tasksResponse.data)) {
-          console.log("Mapping taskresponse");
+         // console.log("Mapping taskresponse");
           tasksResponse.data.forEach((task: any) => {
             const currentTime=new Date().toISOString();
-            console.log("Adding task");
-            console.log(currentTime+" "+task.time);
+            //console.log("Adding task");
+            //console.log(currentTime+" "+task.time);
             if(currentTime<task.time){
-              console.log("Passed the if statement");
-              console.log(list.listName);
-              console.log(task.description);
-              console.log(task.time);
+              //console.log("Passed the if statement");
+              //console.log(list.listName);
+              //console.log(task.description);
+              //console.log(task.time);
             allTasks.push({
               listName: list.listName,
               taskName: task.description,
