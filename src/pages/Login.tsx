@@ -13,14 +13,13 @@ type LoginFormData = {
 };
 
 const Login = () => {
-
   useEffect(() => {
-      document.title = 'ActivityM';
-      // You can also include cleanup logic if needed
-      return () => {
-        document.title = ''; // Reset title on unmount (optional)
-      };
-    }, [])
+    document.title = "ActivityM";
+    // You can also include cleanup logic if needed
+    return () => {
+      document.title = ""; // Reset title on unmount (optional)
+    };
+  }, []);
 
   const [formData, setFormData] = useState<LoginFormData>({
     username: "",
@@ -35,9 +34,9 @@ const Login = () => {
   const validateField = (name: string, value: string) => {
     let error = "";
     if (name === "username" && value.length < 3)
-      error = "Username must be at least 3 characters long.";
+      error = "Must be at least 3 characters.";
     if (name === "password" && value.length < 6)
-      error = "Password must be at least 6 characters long.";
+      error = "Must be at least 6 characters.";
     setErrors((prevErrors) => ({ ...prevErrors, [name]: error }));
   };
 
@@ -61,10 +60,10 @@ const Login = () => {
 
       console.log("Login successful:", response.data);
       localStorage.setItem("token", response.data.token);
-    //  console.log(response.data.token);
-     // console.log(response.data.username);
+      //  console.log(response.data.token);
+      // console.log(response.data.username);
       localStorage.setItem("username", response.data.username);
-      
+
       navigate("/home"); // Redirect after successful login
     } catch (error: any) {
       if (error.response) {
@@ -77,7 +76,7 @@ const Login = () => {
 
   return (
     <div className="auth-container">
-      <h1>Login</h1>
+      <h1>LOGIN</h1>
       <form onSubmit={handleSubmit} noValidate>
         <UsernameInput
           value={formData.username}
@@ -94,11 +93,15 @@ const Login = () => {
           text="Login"
           disabled={Object.values(errors).some((err) => err)}
         />
+        <button className="google-btn" disabled>
+          <img src="/google-icon.webp" alt="Google icon" />
+          Continue with Google
+        </button>
         <div className="signup-link">
           <p>
             Not a member yet?{" "}
             <a href="/signup" className="redirect-link">
-              Sign Up
+              Sign up
             </a>
           </p>
         </div>

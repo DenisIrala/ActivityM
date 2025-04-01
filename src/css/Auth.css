@@ -9,16 +9,19 @@
 
 .form-group {
   font-size: 20px;
-  margin-bottom: 20px;
   font-size: 1.5rem;
 }
 
 input {
   font-size: 1.25rem;
   border: none;
-  border-bottom: 2px solid #404040;
   width: 95%;
   padding: 10px 5px 10px 10px;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0px 3px 5px 0px #8888;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
 }
 
 .login-link,
@@ -36,16 +39,45 @@ input {
 .submit-button {
   width: 100%;
   padding: 10px 20px;
-  background-color: #e1f3f5;
+  background-color: #b7dfdd;
   border: none;
   border-radius: 10px;
   box-shadow: 0px 3px 5px 0px #8888;
+  transition: background-color 0.2s ease;
   margin-top: 20px;
   cursor: pointer;
 }
 
+.submit-button:hover {
+  background-color: #9cd3d3;
+}
+
 .error-message {
-  margin-top: 10px;
   color: red;
-  font-size: 1.15rem;
+  font-size: 1rem;
+  margin: 0;
+  padding: 0;
+}
+
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 6px 0px;
+  font-size: 16px;
+  font-weight: 500;
+  background-color: white;
+  border: 2px solid #ccc;
+  box-shadow: 0px 3px 5px 0px #8888;
+  border-radius: 10px;
+  cursor: not-allowed;
+  opacity: 0.7;
+  width: 100%;
+  margin-top: 30px;
+}
+
+.google-btn img {
+  width: 28px;
+  height: 28px;
 }

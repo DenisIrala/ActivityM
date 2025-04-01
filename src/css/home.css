@@ -8,14 +8,22 @@ body {
   width: 98%;
 }
 
+.welcome-msg {
+  margin: 2.5rem 0 0 0;
+  font-size: 20px;
+  font-style: italic;
+  text-align: left;
+  align-self: flex-start;
+  padding-left: 3rem;
+}
+
 .page-title {
-  /* text-align: left; */
-  /* align-self: flex-start; */
-  margin: 0;
+  margin: 1rem 0 3rem 0;
   font-size: 2.5rem;
   font-weight: 600;
-  margin-bottom: 2rem;
-  margin-top: 1rem;
+  align-self: flex-start;
+  text-align: left;
+  padding-left: 3rem;
 }
 
 .app-container {
@@ -23,13 +31,6 @@ body {
   flex-direction: row;
   justify-content: center;
   align-items: flex-start;
-  margin-top: 20px;
-}
-.sidebar {
-  width: 10%;
-  background-color: #e0f7fa;
-  color: black;
-  padding: 20px;
 }
 
 .nav-list {
@@ -57,10 +58,6 @@ body {
   width: 100%;
 }
 
-h1 {
-  text-align: center;
-}
-
 .list-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
@@ -71,20 +68,19 @@ h1 {
 }
 
 .list-item {
-  width: 100%;
+  width: 200px;
   background-color: white;
-  border-radius: 20px;
+  border-radius: 30px;
   border: 6px solid #b7dfdd;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 180px;
+  height: 200px;
   overflow: hidden;
   position: relative;
 }
 
-/* new */
 .list-clickable {
   flex: 1;
   cursor: pointer;
@@ -92,7 +88,7 @@ h1 {
 .list-footer {
   background-color: #b7dfdd;
   text-align: center;
-  padding: 10px;
+  padding: 20px 10px 20px 10px;
   font-weight: 500;
   font-size: 14px;
 }
@@ -112,18 +108,13 @@ h1 {
 }
 
 .add-list-card {
-  border: 2px solid #b2ebf2;
+  border: 6px solid #bfeaed;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-}
-
-.add-icon {
-  font-size: 2rem;
-  color: #007b7f;
-  margin-bottom: 10px;
+  background-color: #ebfdff;
 }
 
 .button-container {
@@ -132,23 +123,49 @@ h1 {
   margin: 20px;
 }
 
-.add-list-button {
-  background-color: #eaf8f8; /* Light background */
-  border: 2px solid #b2e1e1; /* Light border */
-  border-radius: 12px; /* Rounded corners */
-  padding: 15px 20px; /* Padding inside the button */
-  font-size: 16px; /* Font size */
-  font-weight: bold; /* Bold text */
-  color: #007b7f; /* Text color */
-  cursor: pointer; /* Pointer on hover */
-  display: flex; /* Flex for icon and text alignment */
-  align-items: center; /* Center items vertically */
+.task-actions {
+  display: flex;
+  gap: 10px;
+  font-size: 14px;
 }
 
-.add-list-button:hover {
-  background-color: #d1f0f0; /* Darker background on hover */
+.list-edit-input,
+.list-add-input {
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 135px;
 }
 
-.plus-icon {
-  margin-right: 8px; /* Space between icon and text */
+.list-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 18px;
+  padding: 0;
+}
+
+.list-actions button:hover {
+  text-decoration: underline;
+}
+
+.list-actions .edit-btn {
+  color: #2d7c7a;
+}
+
+.list-actions .delete-btn {
+  color: #d26363;
+}
+
+.list-name {
+  text-decoration: none;
+  color: #2f2f2f;
+  cursor: pointer;
+  font-size: 1.25rem;
+}
+
+.list-name:hover {
+  font-weight: 600;
 }
