@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { apiRequest } from "../services/apiService";
 import axios from "axios";
 import Sidebar from "../components/Sidebar";
-import "../css/Home.css";
+import "../css/home.css";
 
 const Home: FC = () => {
   const navigate = useNavigate();

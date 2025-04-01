@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { clearAuth } from "../authUtils";
 import { fetchAllLists } from "../services/apiService";
-import "../css/Task.css";
+import "../css/task.css";
 
 import {
   fetchTasks,

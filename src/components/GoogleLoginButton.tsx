@@ -1,5 +1,5 @@
 import React from "react";
-import { GoogleLogin, googleLogout } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode"; 
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -33,12 +33,12 @@ const GoogleLoginButton: React.FC = () => {
       console.error("Error during login:", error);
     }
   };
-
+/*
   const handleLogout = () => {
     googleLogout();
     console.log("User logged out");
   };
-
+*/
   return (
     <div>
       <GoogleLogin onSuccess={handleSuccess} onError={() => console.log("Login Failed")} />
