@@ -51,3 +51,7 @@ export const markTask = async (itemID: number, taskMark: boolean) => {
 export const deleteTask = async (itemID: number) => {
   return apiRequest("DELETE", `deleteTask/${itemID}`);
 };
+
+export const fetchAllLists = async () => {
+  return apiRequest("GET", "getLists");
+};

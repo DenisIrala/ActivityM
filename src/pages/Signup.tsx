@@ -68,9 +68,9 @@ const Signup = () => {
         username: formData.username,
         pass: formData.password,
       });
-      localStorage.setItem('token', response.data.token);
+      localStorage.setItem("token", response.data.token);
       console.log("Signup successful:", response.data);
-      navigate("/home"); // Redirect after successful signup
+      navigate("/home");
     } catch (error: any) {
       if (error.response) {
         setSignupError(error.response.data.error);
@@ -82,7 +82,7 @@ const Signup = () => {
 
   return (
     <div className="auth-container">
-      <h1>Sign Up</h1>
+      <h1>SIGN UP</h1>
       <form onSubmit={handleSubmit} noValidate>
         <UsernameInput
           value={formData.username}
@@ -110,6 +110,11 @@ const Signup = () => {
           text="Create Account"
           disabled={Object.values(errors).some((err) => err)}
         />
+
+        <button className="google-btn" disabled>
+          <img src="/google-icon.webp" alt="Google icon" />
+          Sign up with Google
+        </button>
 
         <div className="login-link">
           <p>

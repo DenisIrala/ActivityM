@@ -8,7 +8,7 @@ type InputProps = {
 
 const ConfirmPasswordInput = ({ value, onChange, error }: InputProps) => (
   <div className="form-group">
-    <label htmlFor="confirmPassword">Confirm Password</label>
+    <label htmlFor="confirmPassword">Confirm Password:</label>
     <input
       type="password"
       id="confirmPassword"

@@ -8,7 +8,7 @@ type InputProps = {
 
 const UsernameInput = ({ value, onChange, error }: InputProps) => (
   <div className="form-group">
-    <label htmlFor="username">Username</label>
+    <label htmlFor="username">Username:</label>
     <input
       type="text"
       id="username"
