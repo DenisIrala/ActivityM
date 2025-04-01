@@ -5,9 +5,14 @@ import Signup from "./pages/Signup.tsx";
 import TaskPage from "./pages/TaskPage.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import Deadlines from "./pages/Deadlines.tsx";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "";
+const GOOGLE_CLIENT_ID = import.meta.env.GOOGLE_CLIENT_ID;
 
 function App() {
   return (
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
@@ -17,6 +22,7 @@ function App() {
         <Route path="/deadlines" element={<Deadlines/>} />
       </Routes>
     </Router>
+    </GoogleOAuthProvider>
   );
 }
 

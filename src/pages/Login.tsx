@@ -6,6 +6,7 @@ import PasswordInput from "../components/PasswordInput";
 import SubmitButton from "../components/SubmitButton";
 
 import "../css/Auth.css";
+import GoogleLoginButton from "../components/GoogleLoginButton";
 
 type LoginFormData = {
   username: string;
@@ -94,6 +95,7 @@ const Login = () => {
           text="Login"
           disabled={Object.values(errors).some((err) => err)}
         />
+        <GoogleLoginButton/>
         <div className="signup-link">
           <p>
             Not a member yet?{" "}
