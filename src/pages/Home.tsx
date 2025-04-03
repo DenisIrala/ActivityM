@@ -5,6 +5,7 @@ import { apiRequest } from "../services/apiService";
 import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import "../css/home.css";
+import { googleLogout } from "@react-oauth/google";
 
 const Home: FC = () => {
   const navigate = useNavigate();
@@ -51,6 +52,7 @@ const Home: FC = () => {
 
   const handleLogout = () => {
     clearAuth();
+    googleLogout();
     navigate("/", { replace: true });
   };
 

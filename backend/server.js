@@ -371,7 +371,19 @@ app.post("/google-login", async (req, res) => {
         accID = users[0].accID;
       }
 
-      res.json({ message: "Google login successful", accID: accID });
+      const token = jwt.sign(
+        { accID: accId, username: googleUsername },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+      );
+      //console.log(user.accID+" "+username)
+      res.json({
+        message: "Google login successful",
+        username: username,
+        token: token,
+      });
+
+
     } catch (error) {
       console.error("Google login error:", error);
       res.status(500).json({ error: "Internal server error" });

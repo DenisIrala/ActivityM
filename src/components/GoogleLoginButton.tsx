@@ -1,6 +1,5 @@
 import React from "react";
 import { GoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode"; 
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -13,13 +12,9 @@ const GoogleLoginButton: React.FC = () => {
   const handleSuccess = async (credentialResponse: any) => {
     if (!credentialResponse.credential) return;
 
-    // Decode the JWT token from Google
-    const decoded: any = jwtDecode(credentialResponse.credential);
-    console.log("Google User:", decoded);
-
     try {
       const res = await axios.post(`${API_BASE}/google-login`, {
-        token: credentialResponse.credential,
+        token: credentialResponse.credential
       });
 
       if (res.status === 200) {
@@ -35,7 +30,7 @@ const GoogleLoginButton: React.FC = () => {
   };
 /*
   const handleLogout = () => {
-    googleLogout();
+    
     console.log("User logged out");
   };
 */
