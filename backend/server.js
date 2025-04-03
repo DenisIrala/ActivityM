@@ -372,14 +372,14 @@ app.post("/google-login", async (req, res) => {
       }
 
       const token = jwt.sign(
-        { accID: accId, username: googleUsername },
+        { accID: accID, username: googleUsername },
         process.env.JWT_SECRET,
         { expiresIn: "1h" }
       );
       //console.log(user.accID+" "+username)
       res.json({
         message: "Google login successful",
-        username: username,
+        username: googleUsername,
         token: token,
       });
 
