@@ -15,7 +15,7 @@ type LoginFormData = {
 
 const Login = () => {
   useEffect(() => {
-    document.title = "ActivityM";
+    document.title = "Activity Manager | Login";
     return () => {
       document.title = "";
     };
