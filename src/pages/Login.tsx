@@ -74,7 +74,13 @@ const Login = () => {
 
   return (
     <div className="auth-container">
-      <h1>LOGIN</h1>
+      <div className="logo">
+        <a href="https://github.com/DenisIrala/ActivityM" target="_blank">
+          Activity Manager
+        </a>
+      </div>
+      <p className="opening-phrase">✔ Stay on top of tasks and deadlines</p>
+      <h1 className="login-title">LOGIN</h1>
       <form onSubmit={handleSubmit} noValidate>
         <UsernameInput
           value={formData.username}

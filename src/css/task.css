@@ -7,7 +7,7 @@
 
 .task-main-container {
   flex: 1;
-  padding: 40px;
+  padding: 60px 40px 10px 40px;
 }
 
 .list-title {

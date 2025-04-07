@@ -120,7 +120,7 @@ const Home: FC = () => {
         <p className="welcome-msg">
           <i>Welcome, {username}!</i>
         </p>
-        <h1 className="page-title">☑️ Your Lists</h1>
+        <h1 className="page-title">Your Lists</h1>
 
         <div className="list-container">
           <div className="list-item add-list-card">

@@ -1,15 +1,18 @@
-body {
+.app-container {
+  display: flex;
+  width: 98%;
+  min-height: 100vh;
   background-color: #f8feff;
-  margin: 0;
-  display: block;
 }
 
-.app-container {
-  width: 98%;
+.main-content {
+  flex: 1;
+  padding: 20px;
+  width: 100%;
 }
 
 .welcome-msg {
-  margin: 2.5rem 0 0 0;
+  margin: 3rem 0 0 0;
   font-size: 20px;
   font-style: italic;
   text-align: left;
@@ -26,52 +29,20 @@ body {
   padding-left: 3rem;
 }
 
-.app-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: flex-start;
-}
-
-.nav-list {
-  list-style-type: none;
-  padding: 0;
-}
-
-.nav-list li {
-  margin: 15px 0;
-  width: 10%;
-}
-
-.nav-list li:hover {
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.main-content {
-  flex: 1;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-}
-
 .list-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: 50px;
-  width: 75%;
+  width: 85%;
   justify-items: center;
   margin: auto;
 }
 
 .list-item {
   width: 200px;
-  background-color: white;
+  background-color: #f8feff;
   border-radius: 30px;
-  border: 6px solid #b7dfdd;
+  border: 6px solid #C3E2E0;
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
@@ -80,13 +51,17 @@ body {
   overflow: hidden;
   position: relative;
 }
-
+.list-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease-in-out;
+}
 .list-clickable {
   flex: 1;
   cursor: pointer;
 }
 .list-footer {
-  background-color: #b7dfdd;
+  background-color: #c3e2e0;
   text-align: center;
   padding: 20px 10px 20px 10px;
   font-weight: 500;
@@ -168,4 +143,35 @@ body {
 
 .list-name:hover {
   font-weight: 600;
+}
+
+.empty-state {
+  text-align: center;
+  margin-top: 80px;
+  color: #333;
+  font-family: "Fredoka", sans-serif;
+}
+
+.empty-state h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.empty-state p {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.add-list-btn {
+  align-self: flex-end;
+  background-color: #b7dfdd;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-bottom: 50px;
+}
+.add-list-btn:hover {
+  background-color: #9cd3d3;
 }

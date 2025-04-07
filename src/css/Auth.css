@@ -28,6 +28,7 @@ input {
 .signup-link {
   font-size: 1.25rem;
   text-align: center;
+  margin-top: 25px;
 }
 
 .redirect-link {
@@ -61,4 +62,22 @@ input {
 
 .google-login-container {
   margin-top: 1.5rem;
+}
+
+.logo {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #2a9794;
+}
+
+.opening-phrase {
+  color: #2a9794;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+.ggl {
+  box-shadow: 0px 3px 5px 0px #8888;
 }

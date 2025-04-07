@@ -127,10 +127,9 @@ const Deadlines: FC = () => {
           {" "}
           ⬅ back
         </button>
-        <h2 className="page-title deadline-title">📆 Deadlines Timeline</h2>
+        <h2 className="page-title deadline-title">Deadlines Timeline</h2>
         <p className="description">
-          View upcoming task deadlines across all your lists in a clear visual
-          timeline.
+          View upcoming task deadlines across all your lists in the timeline below.
         </p>
         <div id="timeline" className="timeline-chart"></div>
       </div>

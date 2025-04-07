@@ -82,6 +82,12 @@ const Signup = () => {
 
   return (
     <div className="auth-container">
+      <div className="logo">
+        <a href="https://github.com/DenisIrala/ActivityM" target="_blank">
+          Activity Manager
+        </a>
+      </div>
+      <p className="opening-phrase">✔ Stay on top of tasks and deadlines</p>
       <h1>SIGN UP</h1>
       <form onSubmit={handleSubmit} noValidate>
         <UsernameInput

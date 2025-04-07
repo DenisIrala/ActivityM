@@ -35,7 +35,7 @@ const GoogleLoginButton: React.FC = () => {
   };
 */
   return (
-    <div>
+    <div className="ggl">
       <GoogleLogin onSuccess={handleSuccess} onError={() => console.log("Login Failed")} />
 
     </div>
