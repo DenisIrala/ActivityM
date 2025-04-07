@@ -44,7 +44,7 @@ const Home: FC = () => {
     token = localStorage.getItem("token");
     username = localStorage.getItem("username");
     fetchLists();
-    document.title = "ActivityM";
+    document.title = "Activity Manager | Home";
     return () => {
       document.title = "";
     };
