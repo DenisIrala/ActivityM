@@ -111,11 +111,6 @@ const Signup = () => {
           disabled={Object.values(errors).some((err) => err)}
         />
 
-        <button className="google-btn" disabled>
-          <img src="/google-icon.webp" alt="Google icon" />
-          Sign up with Google
-        </button>
-
         <div className="login-link">
           <p>
             Already a member?{" "}

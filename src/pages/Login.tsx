@@ -16,9 +16,8 @@ type LoginFormData = {
 const Login = () => {
   useEffect(() => {
     document.title = "ActivityM";
-    // You can also include cleanup logic if needed
     return () => {
-      document.title = ""; // Reset title on unmount (optional)
+      document.title = "";
     };
   }, []);
 
@@ -52,20 +51,18 @@ const Login = () => {
 
     try {
       const API_BASE = import.meta.env.VITE_API_BASE_URL || "";
-      console.log("API_BASE URL:", API_BASE);
+      // console.log("API_BASE URL:", API_BASE);
 
       const response = await axios.post(`${API_BASE}/login`, {
         username: formData.username,
         pass: formData.password,
       });
 
-      console.log("Login successful:", response.data);
+      // console.log("Login successful:", response.data);
       localStorage.setItem("token", response.data.token);
-      //  console.log(response.data.token);
-      // console.log(response.data.username);
       localStorage.setItem("username", response.data.username);
 
-      navigate("/home"); // Redirect after successful login
+      navigate("/home");
     } catch (error: any) {
       if (error.response) {
         setLoginError(error.response.data.error);
@@ -94,11 +91,9 @@ const Login = () => {
           text="Login"
           disabled={Object.values(errors).some((err) => err)}
         />
-        <button className="google-btn" disabled>
-          <img src="/google-icon.webp" alt="Google icon" />
-          Continue with Google
-        </button>
-        <GoogleLoginButton/>
+        <div className="google-login-container">
+          <GoogleLoginButton />
+        </div>
         <div className="signup-link">
           <p>
             Not a member yet?{" "}

@@ -1,5 +1,8 @@
 import { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { handleLogout } from "../authUtils";
+import Sidebar from "../components/Sidebar";
+import "../css/Deadlines.css";
 import axios from "axios";
 
 const Deadlines: FC = () => {
@@ -7,58 +10,53 @@ const Deadlines: FC = () => {
   const [tasks, setTasks] = useState<
     { listName: string; taskName: string; startDate: string; dueDate: string }[]
   >([]);
-
+  const username = localStorage.getItem("username");
   const token = localStorage.getItem("token");
+
+  const handleLogoutWrapper = () => handleLogout(navigate);
 
   const fetchTasks = async () => {
     try {
       const apiUrl = `${
         import.meta.env.VITE_API_BASE_URL || ""
       }/getLists?token=${token}`;
-  
+
       const response = await axios.get(apiUrl, {
         headers: { Authorization: `Bearer ${token}` },
       });
-  
+
       if (!Array.isArray(response.data)) {
         console.error("Error: API did not return an array!", response.data);
         return;
       }
-  
+
       const allTasks: any[] = [];
-  
+
       for (const list of response.data) {
         const tasksResponse = await axios.get(
-          `${
-            import.meta.env.VITE_API_BASE_URL || ""
-          }/getTasks?listID=${list.listID}`,
+          `${import.meta.env.VITE_API_BASE_URL || ""}/getTasks?listID=${
+            list.listID
+          }`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-  
+
         if (Array.isArray(tasksResponse.data)) {
-         // console.log("Mapping taskresponse");
           tasksResponse.data.forEach((task: any) => {
-            const currentTime=new Date().toISOString();
-            //console.log("Adding task");
-            //console.log(currentTime+" "+task.time);
-            if(currentTime<task.time){
-              //console.log("Passed the if statement");
-              //console.log(list.listName);
-              //console.log(task.description);
-              //console.log(task.time);
-            allTasks.push({
-              listName: list.listName,
-              taskName: task.description,
-              startDate: currentTime, // Set startDate to the current time in ISO 8601 format
-              dueDate: task.time,
-            });
-          }
+            const currentTime = new Date().toISOString();
+            if (currentTime < task.time) {
+              allTasks.push({
+                listName: list.listName,
+                taskName: task.description,
+                startDate: currentTime,
+                dueDate: task.time,
+              });
+            }
           });
         }
       }
-  
+
       setTasks(allTasks);
     } catch (error) {
       console.error("Error fetching tasks:", error);
@@ -88,7 +86,9 @@ const Deadlines: FC = () => {
       const container = document.getElementById("timeline");
       if (!container) return;
 
-      const chart = new (window as any).google.visualization.Timeline(container);
+      const chart = new (window as any).google.visualization.Timeline(
+        container
+      );
       const dataTable = new (window as any).google.visualization.DataTable();
 
       dataTable.addColumn({ type: "string", id: "List" });
@@ -119,10 +119,21 @@ const Deadlines: FC = () => {
   }, [tasks]);
 
   return (
-    <div>
-      <h2>Task Deadlines Timeline</h2>
-      <div id="timeline" style={{ width: "90%", height: "500px", margin: "auto" }}></div>
-      <button onClick={() => navigate("/home")}>Back to Home</button>
+    <div className="deadlines-page-container">
+      <Sidebar username={username} onLogout={handleLogoutWrapper} />
+
+      <div className="deadlines-main-container">
+        <button className="back-btn d-back" onClick={() => navigate("/home")}>
+          {" "}
+          ⬅ back
+        </button>
+        <h2 className="page-title deadline-title">📆 Deadlines Timeline</h2>
+        <p className="description">
+          View upcoming task deadlines across all your lists in a clear visual
+          timeline.
+        </p>
+        <div id="timeline" className="timeline-chart"></div>
+      </div>
     </div>
   );
 };

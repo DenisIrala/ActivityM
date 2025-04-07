@@ -15,17 +15,6 @@
   font-weight: 600;
   margin-bottom: 1.5rem;
   text-align: left;
-
-}
-
-.back-button {
-  background: none;
-  border: none;
-  color: #333;
-  font-weight: bold;
-  font-size: 1rem;
-  margin-bottom: 1rem;
-  cursor: pointer;
 }
 
 .task-list {
@@ -79,7 +68,8 @@
   text-decoration: underline;
 }
 
-.task-actions .edit-btn {
+.task-actions .edit-btn,
+.task-actions .save-btn {
   color: #2d7c7a;
 }
 
@@ -87,7 +77,6 @@
   color: #d26363;
 }
 
-/* add task */
 .add-task-section {
   border-radius: 16px;
   margin-top: 40px;
@@ -134,12 +123,29 @@
 }
 
 .back-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
 }
 
 .back-btn:hover {
-    color: gray;
-}  
+  color: gray;
+}
+
+.task-edit-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  max-width: 500px;
+}
+
+.task-edit-inputs input[type="text"],
+.task-edit-inputs input[type="date"] {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}

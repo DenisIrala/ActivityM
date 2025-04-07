@@ -32,3 +32,21 @@
 .nav-list li:hover {
   text-decoration: underline;
 }
+
+.manager {
+  display: block;
+  margin: -6px;
+}
+
+.logo {
+  text-align: center;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:hover {
+  opacity: 0.9;
+}

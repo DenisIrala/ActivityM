@@ -1,8 +1,8 @@
 import { FC, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
-import { clearAuth } from "../authUtils";
 import { fetchAllLists } from "../services/apiService";
+import { handleLogout } from "../authUtils";
+import Sidebar from "../components/Sidebar";
 import "../css/task.css";
 
 import {
@@ -25,6 +25,8 @@ const TaskPage: FC = () => {
   const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
   const [editedTaskDescription, setEditedTaskDescription] = useState("");
   const [listName, setListName] = useState("");
+
+  const handleLogoutWrapper = () => handleLogout(navigate);
 
   useEffect(() => {
     if (id) {
@@ -76,11 +78,12 @@ const TaskPage: FC = () => {
     if (!editedTaskDescription.trim()) return;
 
     try {
-      await updateTask(
-        taskId,
-        editedTaskDescription,
-        taskTime || new Date().toISOString().split("T")[0]
-      );
+      const originalTask = tasks.find((task) => task.itemID === taskId);
+      const rawDate = taskTime || originalTask?.time || "";
+      const safeDate = new Date(rawDate).toISOString().split("T")[0];
+
+      await updateTask(taskId, editedTaskDescription, safeDate);
+
       setEditingTaskId(null);
       setEditedTaskDescription("");
       loadTasks();
@@ -108,23 +111,20 @@ const TaskPage: FC = () => {
   };
 
   const formatDate = (isoString: string) => {
+    const date = new Date(isoString);
+    date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+
     return new Intl.DateTimeFormat("en-US", {
       weekday: "long",
       year: "numeric",
       month: "long",
       day: "numeric",
-    }).format(new Date(isoString));
-  };
-
-  const handleLogout = () => {
-    clearAuth();
-    navigate("/", { replace: true });
+    }).format(date);
   };
 
   return (
     <div className="task-page-container">
-      <Sidebar username={username} onLogout={handleLogout} />
-
+      <Sidebar username={username} onLogout={handleLogoutWrapper} />
       <div className="task-main-container">
         <button className="back-btn" onClick={() => navigate("/home")}>
           {" "}
@@ -142,23 +142,35 @@ const TaskPage: FC = () => {
               />
               {editingTaskId === task.itemID ? (
                 <div className="task-details">
-                  <input
-                    type="text"
-                    value={editedTaskDescription}
-                    onChange={(e) => setEditedTaskDescription(e.target.value)}
-                  />
-                  <input
-                    type="date"
-                    className="date"
-                    value={taskTime || task.time}
-                    onChange={(e) => setTaskTime(e.target.value)}
-                  />
+                  <div className="task-edit-inputs">
+                    <input
+                      type="text"
+                      value={editedTaskDescription}
+                      onChange={(e) => setEditedTaskDescription(e.target.value)}
+                    />
+                    <input
+                      type="date"
+                      value={
+                        taskTime ||
+                        (editingTaskId
+                          ? new Date(
+                              tasks.find(
+                                (task) => task.itemID === editingTaskId
+                              )?.time || ""
+                            )
+                              .toISOString()
+                              .split("T")[0]
+                          : "")
+                      }
+                      onChange={(e) => setTaskTime(e.target.value)}
+                    />
+                  </div>
                   <div className="task-actions">
                     <button
-                      className="edit-btn"
+                      className="save-btn"
                       onClick={() => handleSaveEdit(task.itemID)}
                     >
-                      Save
+                      save
                     </button>
                   </div>
                 </div>
