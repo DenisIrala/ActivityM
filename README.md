@@ -1,7 +1,3 @@
-Okay, here is your README content formatted using standard GitHub Markdown:
-
-Markdown
-
 # CIS 4004 Project
 
 **Site URL:** [https://cis4004activitymanager.org/](https://cis4004activitymanager.org/) (no local deployment needed)
