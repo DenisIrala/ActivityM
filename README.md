@@ -20,4 +20,4 @@
 
 **Use Cases:**
 
-* More Understanding and debugging. Google Login was difficult to debug because it had many requirements to work properly, so we 
+* More Understanding and debugging. Google Login was difficult to debug because it had many requirements to work properly, so we asked a different AI model to check for problems.
